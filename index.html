@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BugCraft</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Google Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <!-- Font Awesome for icons -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  />
+</head>
+<body>
+  <header>
+    <div class="container header-container">
+      <div class="header-content">
+        <div class="title-section">
+          <h1>BugCraft</h1>
+          <h2>End-to-End Crash Bug Reproduction Using LLM Agents in Minecraft</h2>
+          <h3>Arxiv preprint</h3>
+          <div class="authors">
+            <p>Eray Yapağcı, Yavuz Alp Sencer Öztürk, Eray Tüzün</p>
+            <p>Computer Engineering Department, Bilkent University</p>
+            <p>Ankara, Turkey</p>
+          </div>
+        </div>
+        <div class="header-buttons">
+          <a href="#" class="header-button"><i class="fas fa-file-alt"></i> Paper</a>
+          <a href="#" class="header-button"><i class="fab fa-github"></i> Code</a>
+          <a href="#" class="header-button"><i class="fas fa-database"></i> Dataset</a>
+          <a href="#" class="header-button"><i class="fas fa-chart-line"></i> Results</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section with Banner -->
+  <section id="hero">
+    <div class="container">
+      <div class="hero-container">
+        <img src="figures/bugcraft-intro-v4.png" alt="BugCraft Overview" class="hero-image" />
+        <p class="image-caption">Figure 1: Overview of the BugCraft framework</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Abstract Section -->
+  <section id="abstract" class="content-section">
+    <div class="container">
+      <h2><i class="fas fa-book-open"></i> Abstract</h2>
+      <div class="content-wrapper">
+        <p><strong>Context:</strong> Reproducing game bugs, in our case crash bugs in continuously evolving games like Minecraft, is a notoriously manual, time-consuming, and challenging process to automate. Despite the success of LLM-driven bug reproduction in other software domains, games, with their complex interactive environments, remain largely unaddressed.</p>
+        <p><strong>Objective:</strong> This paper introduces BugCraft, a novel end-to-end framework designed to automate the reproduction of crash bugs in Minecraft directly from user-submitted bug reports, addressing the critical gap in automated game bug reproduction.</p>
+        <p><strong>Method:</strong> BugCraft employs a two-stage approach: first, a Step Synthesizer leverages LLMs and Minecraft Wiki knowledge to transform bug reports into high-quality, structured steps to reproduce (S2R). Second, an Action Model, powered by a vision-based LLM agent (GPT-4o) and a custom macro API, executes these S2R steps within Minecraft to trigger the reported crash.</p>
+        <p><strong>Results:</strong> Evaluated on BugCraft-Bench, our framework successfully reproduced 30.23% of crash bugs end-to-end. The Step Synthesizer demonstrated a 66.28% accuracy in generating correct bug reproduction plans, highlighting its effectiveness in interpreting and structuring bug report information.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Framework Overview Section -->
+  <section id="framework" class="content-section">
+    <div class="container">
+      <h2><i class="fas fa-cogs"></i> Framework Overview</h2>
+      <div class="content-wrapper">
+        <p>
+          BugCraft consists of two main components: the Step Synthesizer and the Action Model. The Step Synthesizer transforms unstructured bug reports into clear, executable steps, while the Action Model uses these steps to interact with the game environment and reproduce the crash.
+        </p>
+        <div class="image-container">
+          <img src="figures/fig2-gray-v3.png" alt="BugCraft Framework Architecture" class="section-image" />
+          <p class="image-caption">Figure 2: The BugCraft framework, illustrating the two-stage process of S2R synthesis and action model execution.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Methodology Section -->
+  <section id="methodology" class="content-section">
+    <div class="container">
+      <h2><i class="fas fa-microscope"></i> Methodology</h2>
+      <div class="content-wrapper">
+        <p>
+          Our framework processes bug reports through a sophisticated pipeline that includes preprocessing, step synthesis, and action execution. The Step Synthesizer employs knowledge augmentation and multi-stage refinement to generate high-quality reproduction steps.
+        </p>
+        <div class="image-container">
+          <img src="figures/fig3.png" alt="Step Synthesizer Component" class="section-image" />
+          <p class="image-caption">Figure 3: Step Synthesizer Component</p>
+        </div>
+        <div class="image-container">
+          <img src="figures/fig4-new-white.png" alt="Action Model Component" class="section-image" />
+          <p class="image-caption">Figure 4: Action Model Component</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Results Section -->
+  <section id="results" class="content-section">
+    <div class="container">
+      <h2><i class="fas fa-chart-bar"></i> Results</h2>
+      <div class="content-wrapper">
+        <p>
+          Our evaluation demonstrates that BugCraft successfully reproduced 30.23% of crash bugs end-to-end. The Step Synthesizer achieved a 66.28% accuracy in generating correct reproduction plans, while the Action Model showed promising capabilities in executing these plans.
+        </p>
+        <div class="image-container">
+          <img src="figures/reproducibility_confusion_matrix.png" alt="Confusion Matrix" class="section-image" />
+          <p class="image-caption">Figure 5: Confusion matrix of bug report reproducibility showing inter-rater agreement</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dataset Section -->
+  <section id="dataset" class="content-section">
+    <div class="container">
+      <h2><i class="fas fa-database"></i> BugCraft-Bench Dataset</h2>
+      <div class="content-wrapper">
+        <p>
+          We introduce BugCraft-Bench, a curated dataset of 86 Minecraft crash bug reports, carefully selected and validated for reproducibility. This dataset serves as a benchmark for evaluating automated bug reproduction systems in game environments.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="content-section">
+    <div class="container">
+      <h2><i class="fas fa-envelope"></i> Contact</h2>
+      <div class="content-wrapper">
+        <p>
+          For more information, please contact:
+        </p>
+        <ul>
+          <li>Eray Yapağcı - <a href="mailto:eray.yapagci@ug.bilkent.edu.tr">eray.yapagci@ug.bilkent.edu.tr</a></li>
+          <li>Yavuz Alp Sencer Öztürk - <a href="mailto:alp.ozturk@ug.bilkent.edu.tr">alp.ozturk@ug.bilkent.edu.tr</a></li>
+          <li>Eray Tüzün - <a href="mailto:eraytuzun@cs.bilkent.edu.tr">eraytuzun@cs.bilkent.edu.tr</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 BugCraft Research. Computer Engineering Department, Bilkent University.</p>
+      <div class="social-links">
+        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+        <a href="#" class="social-link"><i class="fab fa-linkedin"></i></a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html> 
