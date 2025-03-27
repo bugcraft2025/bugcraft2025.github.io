@@ -341,3 +341,127 @@ html {
   scroll-behavior: smooth;
 }
   
+/* Results Section Specific Styles */
+.results-subsection {
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 1px solid #eee;
+}
+
+.results-subsection h3 {
+  font-size: 1.8rem;
+  color: var(--text-color); /* Darker than primary for subheading */
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.results-subsection h3 i {
+  color: var(--primary-color); /* Use primary color for icons */
+  font-size: 1.5rem; /* Slightly smaller than text */
+}
+
+
+.results-subsection h4,
+.results-subsection h5 {
+  font-size: 1.4rem;
+  color: #444; /* Even darker */
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+.results-subsection h5 {
+    font-size: 1.2rem;
+    color: #555;
+    margin-top: 1.5rem;
+}
+
+.results-data {
+  background-color: #f8f9fa; /* Light background for data blocks */
+  padding: 1rem 1.5rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid var(--primary-color);
+}
+
+.results-data p {
+  margin-bottom: 0.5rem;
+  font-size: 1.05rem;
+}
+
+.results-data p:last-child {
+  margin-bottom: 0;
+}
+
+.results-list {
+  list-style: none; /* Remove default bullets */
+  padding-left: 0;
+  margin-top: 1rem;
+}
+
+.results-list li {
+  background-color: #ffffff;
+  padding: 1rem 1.5rem;
+  margin-bottom: 1rem;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.results-list li strong {
+    color: #E65100; /* A distinct color for failure types */
+    display: block; /* Make strong element take its own line */
+    margin-bottom: 0.3rem; /* Add space after failure type name */
+}
+
+/* Nested lists for detailed breakdowns */
+.results-list ul {
+    list-style: none;
+    padding-left: 1.5rem; /* Indent nested list */
+    margin-top: 0.8rem;
+}
+
+.results-list ul li {
+    background-color: #fdfdfd; /* Slightly different background for nested items */
+    border: none;
+    border-left: 3px solid #ced4da; /* Add a left border */
+    padding: 0.8rem 1rem;
+    margin-bottom: 0.8rem;
+}
+
+.results-list ul li ul li {
+    background-color: #ffffff; /* Third level if needed */
+    border-left: 3px solid #adb5bd;
+    padding: 0.6rem 0.8rem;
+}
+
+/* Make nested list item text slightly smaller if desired */
+.results-list ul li,
+.results-list ul li ul li {
+    font-size: 1rem;
+}
+
+/* Adjustments for nested strong tags if needed */
+.results-list ul li strong {
+    color: #EF6C00; /* Slightly different shade if needed */
+    display: inline; /* Keep nested strong tags inline */
+    margin-bottom: 0;
+}
+
+.results-list ul li em,
+.results-list ul li ul li em {
+    color: #666; /* Style emphasis text */
+    font-style: italic;
+    margin-left: 0.5rem;
+}
+
+/* Ensure image caption is consistent */
+.image-caption {
+  margin-top: 1rem;
+  color: #666;
+  font-style: italic;
+  text-align: center;
+  font-size: 0.95rem;
+}
