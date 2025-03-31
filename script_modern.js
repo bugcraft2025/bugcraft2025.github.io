@@ -62,3 +62,24 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+function copyCitation() {
+  const citation = `@article{yapagci2024bugcraft,
+  title={End-to-End Crash Bug Reproduction Using LLM Agents in Minecraft},
+  author={Yapağcı, Eray and Öztürk, Yavuz Alp Sencer and Tüzün, Eray},
+  journal={arXiv preprint arXiv:2503.20036},
+  year={2024}
+}`;
+  
+  navigator.clipboard.writeText(citation).then(() => {
+    // Optional: Show a success message
+    const button = document.querySelector('.citation-actions button');
+    const originalText = button.innerHTML;
+    button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+    setTimeout(() => {
+      button.innerHTML = originalText;
+    }, 2000);
+  }).catch(err => {
+    console.error('Failed to copy text: ', err);
+  });
+}
