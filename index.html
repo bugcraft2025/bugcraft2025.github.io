@@ -1,55 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>BugCraft - Modern Research Presentation</title>
-  <!-- Link the new CSS -->
-  <link rel="stylesheet" href="style_modern.css" />
-  <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <!-- Font Awesome -->
-  <link
-    rel="stylesheet"
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-  />
-</head>
-<body>
-  <header id="home">
-    <div class="container header-container">
-      <div class="header-content">
-        <div class="title-section">
-          <img src="figures/bugcraft-logo.png" alt="BugCraft Logo" class="title-logo">
-          <h2>End-to-End Crash Bug Reproduction Using LLM Agents in Minecraft</h2>
-          <h3>Arxiv preprint</h3>
-          <div class="authors">
-            <p>Eray Yapağcı, Yavuz Alp Sencer Öztürk, Eray Tüzün</p>
-            <p>Computer Engineering Department, Bilkent University</p>
-            <p>Ankara, Turkey</p>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BugCraft - Modern Research Presentation</title>
+    <!-- Link the new CSS -->
+    <link rel="stylesheet" href="style_modern.css" />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <header id="home">
+      <div class="container header-container">
+        <div class="header-content">
+          <div class="title-section">
+            <img
+              src="figures/bugcraft-logo.png"
+              alt="BugCraft Logo"
+              class="title-logo"
+            />
+            <h2>
+              End-to-End Crash Bug Reproduction Using LLM Agents in Minecraft
+            </h2>
+            <h3>Arxiv preprint</h3>
+            <div class="authors">
+              <p>Eray Yapağcı, Yavuz Alp Sencer Öztürk, Eray Tüzün</p>
+              <p>Computer Engineering Department, Bilkent University</p>
+              <p>Ankara, Turkey</p>
+            </div>
+          </div>
+          <div class="header-buttons">
+            <!-- Updated hrefs with actual links -->
+            <a
+              href="https://arxiv.org/abs/2503.20036"
+              class="header-button"
+              id="btn-paper"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><i class="fas fa-file-alt"></i> Paper</a
+            >
+            <a
+              href="https://github.com/erayyap/bugcraft"
+              class="header-button"
+              id="btn-code"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><i class="fab fa-github"></i> Code</a
+            >
+            <a
+              href="https://huggingface.co/spaces/erayyap/bugcraft"
+              class="header-button"
+              id="btn-dataset"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><i class="fas fa-database"></i> Dataset</a
+            >
+            <a href="#results" class="header-button" id="btn-results"
+              ><i class="fas fa-chart-line"></i> Results</a
+            >
           </div>
         </div>
-        <div class="header-buttons">
-          <!-- Updated hrefs with actual links -->
-          <a href="https://arxiv.org/abs/2503.20036" class="header-button" id="btn-paper" target="_blank" rel="noopener noreferrer"><i class="fas fa-file-alt"></i> Paper</a>
-          <a href="https://github.com/erayyap/bugcraft" class="header-button" id="btn-code" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i> Code</a>
-          <a href="https://huggingface.co/spaces/erayyap/bugcraft" class="header-button" id="btn-dataset" target="_blank" rel="noopener noreferrer"><i class="fas fa-database"></i> Dataset</a>
-          <a href="#results" class="header-button" id="btn-results"><i class="fas fa-chart-line"></i> Results</a>
-        </div>
       </div>
-    </div>
-  </header>
+    </header>
 
-  <!-- Hero Section -->
-  <section id="hero">
-    <div class="container hero-inner-container">
-       <div class="leaderboard-container">
+    <!-- Hero Section -->
+    <section id="hero">
+      <div class="container hero-inner-container">
+        <div class="leaderboard-container">
           <h2 class="leaderboard-title">Leaderboard</h2>
           <div class="leaderboard-content">
             <div class="tab-group">
-              <button class="tab active" data-tab="end-to-end">End-to-End</button>
-              <button class="tab" data-tab="synthesizer">Step Synthesizer</button>
+              <button class="tab active" data-tab="end-to-end">
+                End-to-End
+              </button>
+              <button class="tab" data-tab="synthesizer">
+                Step Synthesizer
+              </button>
               <button class="tab" data-tab="action">Action Model</button>
             </div>
             <div class="table-scroll">
@@ -69,15 +105,31 @@
                     <span class="model-text">BugCraft End-to-End</span>
                   </td>
                   <td class="percent-cell">30.23</td>
-                  <td class="org-cell"><img src="figures/bilkent-logo.png" alt="Bilkent" class="org-icon" /></td>
-                  <td class="date-cell"><span class="date-badge">2024-03-31</span></td>
+                  <td class="org-cell">
+                    <img
+                      src="figures/bilkent-logo.png"
+                      alt="Bilkent"
+                      class="org-icon"
+                    />
+                  </td>
+                  <td class="date-cell">
+                    <span class="date-badge">2024-03-31</span>
+                  </td>
                   <td class="check-cell"><i class="fas fa-check"></i></td>
                   <td class="check-cell"><i class="fas fa-check"></i></td>
-                  <td class="link-cell"><a href="#" class="link-icon"><i class="fas fa-link"></i></a></td>
+                  <td class="link-cell">
+                    <a href="#" class="link-icon"
+                      ><i class="fas fa-link"></i
+                    ></a>
+                  </td>
                 </tr>
               </table>
 
-              <table class="leaderboard-table" id="synthesizer-table" style="display: none;">
+              <table
+                class="leaderboard-table"
+                id="synthesizer-table"
+                style="display: none"
+              >
                 <tr>
                   <th>Model</th>
                   <th>% Accuracy</th>
@@ -93,15 +145,31 @@
                     <span class="model-text">BugCraft Step Synthesizer</span>
                   </td>
                   <td class="percent-cell">66.28</td>
-                  <td class="org-cell"><img src="figures/bilkent-logo.png" alt="Bilkent" class="org-icon" /></td>
-                  <td class="date-cell"><span class="date-badge">2024-03-31</span></td>
+                  <td class="org-cell">
+                    <img
+                      src="figures/bilkent-logo.png"
+                      alt="Bilkent"
+                      class="org-icon"
+                    />
+                  </td>
+                  <td class="date-cell">
+                    <span class="date-badge">2024-03-31</span>
+                  </td>
                   <td class="check-cell"><i class="fas fa-check"></i></td>
                   <td class="check-cell"><i class="fas fa-check"></i></td>
-                  <td class="link-cell"><a href="#" class="link-icon"><i class="fas fa-link"></i></a></td>
+                  <td class="link-cell">
+                    <a href="#" class="link-icon"
+                      ><i class="fas fa-link"></i
+                    ></a>
+                  </td>
                 </tr>
               </table>
 
-              <table class="leaderboard-table" id="action-table" style="display: none;">
+              <table
+                class="leaderboard-table"
+                id="action-table"
+                style="display: none"
+              >
                 <tr>
                   <th>Model</th>
                   <th>% Success</th>
@@ -117,119 +185,202 @@
                     <span class="model-text">BugCraft Action Model</span>
                   </td>
                   <td class="percent-cell">38.60</td>
-                  <td class="org-cell"><img src="figures/bilkent-logo.png" alt="Bilkent" class="org-icon" /></td>
-                  <td class="date-cell"><span class="date-badge">2024-03-31</span></td>
+                  <td class="org-cell">
+                    <img
+                      src="figures/bilkent-logo.png"
+                      alt="Bilkent"
+                      class="org-icon"
+                    />
+                  </td>
+                  <td class="date-cell">
+                    <span class="date-badge">2025-02-07</span>
+                  </td>
                   <td class="check-cell"><i class="fas fa-check"></i></td>
                   <td class="check-cell"><i class="fas fa-check"></i></td>
-                  <td class="link-cell"><a href="#" class="link-icon"><i class="fas fa-link"></i></a></td>
+                  <td class="link-cell">
+                    <a href="#" class="link-icon"
+                      ><i class="fas fa-link"></i
+                    ></a>
+                  </td>
                 </tr>
               </table>
             </div>
           </div>
         </div>
-    </div>
-  </section>
-
-  <!-- Simple Framework Overview -->
-   
-  <section id="simple-framework" class="content-section">
-    
-    <div class="container">
-      <div class="section-header">
-        <i class="fas fa-book-open icon-gradient"></i>
-        <h2>Introduction</h2>
-    </div>
-      <div class="intro-text">
-        <p>Our work consists of two main contributions:</p>
-        <div class="contribution-points">
-          <div class="contribution">
-            <i class="fas fa-database"></i>
-            <span><strong>BugCraft-Bench Dataset:</strong> A curated collection of 86 reproducible Minecraft crash bug reports, serving as a benchmark for automated bug reproduction systems.</span>
-          </div>
-          <div class="contribution">
-            <i class="fas fa-robot"></i>
-            <span><strong>BugCraft Framework:</strong> An end-to-end automated system that transforms unstructured bug reports into executable steps and reproduces them in-game.</span>
-          </div>
-        </div>
       </div>
-      <div class="simple-framework-flow">
-        <!-- Input -->
-        <div class="simple-component input" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #f9f9f9;">
-          <i class="fas fa-file-alt"></i>
-          <h3>Bug Report</h3>
-          <span class="footnote" style="font-size: 0.7rem; display: block; margin-top: 0.2rem; color: #777;">from BugCraft-Bench</span>
+    </section>
+
+    <!-- Simple Framework Overview -->
+
+    <section id="simple-framework" class="content-section">
+      <div class="container">
+        <div class="section-header">
+          <i class="fas fa-book-open icon-gradient"></i>
+          <h2>Introduction</h2>
         </div>
-        
-        <!-- Arrow -->
-        <div class="simple-arrow">
-          <i class="fas fa-arrow-right"></i>
-        </div>
-        
-        <!-- BugCraft Box -->
-        <div class="bugcraft-box">
-          <h3>BugCraft Framework</h3>
-          <div class="bugcraft-components">
-            <div class="simple-component synthesizer" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #f9f9f9;">
-              <i class="fas fa-code-branch"></i>
-              <h4>S2R Synthesizer</h4>
+        <div class="intro-text">
+          <p>Our work consists of two main contributions:</p>
+          <div class="contribution-points">
+            <div class="contribution">
+              <i class="fas fa-database"></i>
+              <span
+                ><strong>BugCraft-Bench Dataset:</strong> A curated collection
+                of 86 reproducible Minecraft crash bug reports, serving as a
+                benchmark for automated bug reproduction systems.</span
+              >
             </div>
-            <div class="simple-arrow internal">
-              <i class="fas fa-arrow-right"></i>
-            </div>
-            <div class="simple-component action" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #f9f9f9;">
+            <div class="contribution">
               <i class="fas fa-robot"></i>
-              <h4>Action Model Agent</h4>
+              <span
+                ><strong>BugCraft Framework:</strong> An end-to-end automated
+                system that transforms unstructured bug reports into executable
+                steps and reproduces them in-game.</span
+              >
             </div>
           </div>
         </div>
-        
-        <!-- Arrow -->
-        <div class="simple-arrow">
-          <i class="fas fa-arrow-right"></i>
-        </div>
-        
-        <!-- Output -->
-        <div class="simple-component output" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #f9f9f9;">
-          <div class="outcome-simple">
-            <div class="outcome-label success">
-              <i class="fas fa-check"></i> Success
+        <div class="simple-framework-flow">
+          <!-- Input -->
+          <div
+            class="simple-component input"
+            style="
+              box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+              background-color: #f9f9f9;
+            "
+          >
+            <i class="fas fa-file-alt"></i>
+            <h3>Bug Report</h3>
+            <span
+              class="footnote"
+              style="
+                font-size: 0.7rem;
+                display: block;
+                margin-top: 0.2rem;
+                color: #777;
+              "
+              >from BugCraft-Bench</span
+            >
+          </div>
+
+          <!-- Arrow -->
+          <div class="simple-arrow">
+            <i class="fas fa-arrow-right"></i>
+          </div>
+
+          <!-- BugCraft Box -->
+          <div class="bugcraft-box">
+            <h3>BugCraft Framework</h3>
+            <div class="bugcraft-components">
+              <div
+                class="simple-component synthesizer"
+                style="
+                  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                  background-color: #f9f9f9;
+                "
+              >
+                <i class="fas fa-code-branch"></i>
+                <h4>S2R Synthesizer</h4>
+              </div>
+              <div class="simple-arrow internal">
+                <i class="fas fa-arrow-right"></i>
+              </div>
+              <div
+                class="simple-component action"
+                style="
+                  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                  background-color: #f9f9f9;
+                "
+              >
+                <i class="fas fa-robot"></i>
+                <h4>Action Model Agent</h4>
+              </div>
             </div>
-            <div class="outcome-label failure">
-              <i class="fas fa-times"></i> Failure
+          </div>
+
+          <!-- Arrow -->
+          <div class="simple-arrow">
+            <i class="fas fa-arrow-right"></i>
+          </div>
+
+          <!-- Output -->
+          <div
+            class="simple-component output"
+            style="
+              box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+              background-color: #f9f9f9;
+            "
+          >
+            <div class="outcome-simple">
+              <div class="outcome-label success">
+                <i class="fas fa-check"></i> Success
+              </div>
+              <div class="outcome-label failure">
+                <i class="fas fa-times"></i> Failure
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Abstract Section -->
-  <section id="abstract" class="content-section">
-    <div class="container">
-      <div class="section-header">
+    <!-- Abstract Section -->
+    <section id="abstract" class="content-section">
+      <div class="container">
+        <div class="section-header">
           <i class="fas fa-book-open icon-gradient"></i>
           <h2>Abstract</h2>
+        </div>
+        <div class="content-wrapper">
+          <p>
+            <strong>Context:</strong> Reproducing game bugs, in our case crash
+            bugs in continuously evolving games like Minecraft, is a notoriously
+            manual, time-consuming, and challenging process to automate. Despite
+            the success of LLM-driven bug reproduction in other software
+            domains, games, with their complex interactive environments, remain
+            largely unaddressed.
+          </p>
+          <p>
+            <strong>Objective:</strong> This paper introduces BugCraft, a novel
+            end-to-end framework designed to automate the reproduction of crash
+            bugs in Minecraft directly from user-submitted bug reports,
+            addressing the critical gap in automated game bug reproduction.
+          </p>
+          <p>
+            <strong>Method:</strong> BugCraft employs a two-stage approach:
+            first, a Step Synthesizer leverages LLMs and Minecraft Wiki
+            knowledge to transform bug reports into high-quality, structured
+            steps to reproduce (S2R). Second, an Action Model, powered by a
+            vision-based LLM agent (GPT-4o) and a custom macro API, executes
+            these S2R steps within Minecraft to trigger the reported crash.
+          </p>
+          <p>
+            <strong>Results:</strong> Evaluated on BugCraft-Bench, our framework
+            successfully reproduced 30.23% of crash bugs end-to-end. The Step
+            Synthesizer demonstrated a 66.28% accuracy in generating correct bug
+            reproduction plans, highlighting its effectiveness in interpreting
+            and structuring bug report information.
+          </p>
+        </div>
       </div>
-      <div class="content-wrapper">
-        <p><strong>Context:</strong> Reproducing game bugs, in our case crash bugs in continuously evolving games like Minecraft, is a notoriously manual, time-consuming, and challenging process to automate. Despite the success of LLM-driven bug reproduction in other software domains, games, with their complex interactive environments, remain largely unaddressed.</p>
-        <p><strong>Objective:</strong> This paper introduces BugCraft, a novel end-to-end framework designed to automate the reproduction of crash bugs in Minecraft directly from user-submitted bug reports, addressing the critical gap in automated game bug reproduction.</p>
-        <p><strong>Method:</strong> BugCraft employs a two-stage approach: first, a Step Synthesizer leverages LLMs and Minecraft Wiki knowledge to transform bug reports into high-quality, structured steps to reproduce (S2R). Second, an Action Model, powered by a vision-based LLM agent (GPT-4o) and a custom macro API, executes these S2R steps within Minecraft to trigger the reported crash.</p>
-        <p><strong>Results:</strong> Evaluated on BugCraft-Bench, our framework successfully reproduced 30.23% of crash bugs end-to-end. The Step Synthesizer demonstrated a 66.28% accuracy in generating correct bug reproduction plans, highlighting its effectiveness in interpreting and structuring bug report information.</p>
-      </div>
-    </div>
-  </section>
+    </section>
 
     <!-- Dataset Section -->
     <section id="dataset" class="content-section">
       <div class="container">
-          <div class="section-header">
-              <i class="fas fa-database icon-gradient"></i>
-              <h2>BugCraft-Bench Dataset</h2>
-          </div>
+        <div class="section-header">
+          <i class="fas fa-database icon-gradient"></i>
+          <h2>BugCraft-Bench Dataset</h2>
+        </div>
         <div class="content-wrapper">
           <div class="dataset-grid">
             <!-- BugCraft-Bench Card -->
-            <div class="dataset-card bugcraft-bench" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #f9f9f9;">
+            <div
+              class="dataset-card bugcraft-bench"
+              style="
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                background-color: #f9f9f9;
+              "
+            >
               <div class="card-header">
                 <i class="fas fa-bug"></i>
                 <h3>BugCraft-Bench</h3>
@@ -248,23 +399,46 @@
                 <div class="dataset-details">
                   <h4>Dataset Creation</h4>
                   <ul class="feature-list">
-                    <li><i class="fas fa-filter"></i> Retrieved crash reports from Mojira using REST API</li>
-                    <li><i class="fas fa-code"></i> Used regex to extract comments, attachments, and external links</li>
-                    <li><i class="fas fa-check-double"></i> Selected reports with "Confirmed" or "Community Consensus" status</li>
-                    <li><i class="fas fa-times-circle"></i> Excluded reports requiring:
+                    <li>
+                      <i class="fas fa-filter"></i> Retrieved crash reports from
+                      Mojira using REST API
+                    </li>
+                    <li>
+                      <i class="fas fa-code"></i> Used regex to extract
+                      comments, attachments, and external links
+                    </li>
+                    <li>
+                      <i class="fas fa-check-double"></i> Selected reports with
+                      "Confirmed" or "Community Consensus" status
+                    </li>
+                    <li>
+                      <i class="fas fa-times-circle"></i> Excluded reports
+                      requiring:
                       <ul class="sub-list">
                         <li>Server/multiplayer interactions</li>
                         <li>External files (datapacks, worlds)</li>
                         <li>Machine-dependent setups</li>
                       </ul>
                     </li>
-                    <li><i class="fas fa-random"></i> Randomly sampled final dataset from qualified reports</li>
+                    <li>
+                      <i class="fas fa-random"></i> Randomly sampled final
+                      dataset from qualified reports
+                    </li>
                   </ul>
                   <h4>Quality Assurance</h4>
                   <ul class="feature-list">
-                    <li><i class="fas fa-check-circle"></i> Multi-stage filtration process</li>
-                    <li><i class="fas fa-check-circle"></i> Manual review for quality and relevance</li>
-                    <li><i class="fas fa-check-circle"></i> Verification of reproducibility</li>
+                    <li>
+                      <i class="fas fa-check-circle"></i> Multi-stage filtration
+                      process
+                    </li>
+                    <li>
+                      <i class="fas fa-check-circle"></i> Manual review for
+                      quality and relevance
+                    </li>
+                    <li>
+                      <i class="fas fa-check-circle"></i> Verification of
+                      reproducibility
+                    </li>
                   </ul>
                 </div>
               </div>
@@ -277,15 +451,28 @@
               <h3>Minecraft Wiki Knowledge Base</h3>
             </div>
             <p class="wiki-description">
-              To enhance our framework with comprehensive game knowledge, we scraped the official Minecraft Wiki using MediaWiki API. 
-              The extracted content is processed and used for fuzzy matching during bug reproduction, reducing reliance on LLM pre-training data.
+              To enhance our framework with comprehensive game knowledge, we
+              scraped the official Minecraft Wiki using MediaWiki API. The
+              extracted content is processed and used for fuzzy matching during
+              bug reproduction, reducing reliance on LLM pre-training data.
             </p>
           </div>
 
           <div class="dataset-cta">
-            <p>Access our curated dataset and contribute to advancing automated game bug reproduction research.</p>
-            <div class="header-buttons dataset-button" style="display: flex; justify-content: center;">
-              <a href="https://huggingface.co/spaces/erayyap/bugcraft" class="header-button" target="_blank" rel="noopener noreferrer">
+            <p>
+              Access our curated dataset and contribute to advancing automated
+              game bug reproduction research.
+            </p>
+            <div
+              class="header-buttons dataset-button"
+              style="display: flex; justify-content: center"
+            >
+              <a
+                href="https://huggingface.co/spaces/erayyap/bugcraft"
+                class="header-button"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <i class="fas fa-download"></i> Download Dataset
               </a>
             </div>
@@ -294,94 +481,146 @@
       </div>
     </section>
 
-
-  <!-- Overview Section -->
-  <section id="methodology" class="content-section">
-    <div class="container">
+    <!-- Overview Section -->
+    <section id="methodology" class="content-section">
+      <div class="container">
         <div class="section-header">
-            <i class="fas fa-microscope icon-gradient"></i>
-            <h2>Framework Overview</h2>
+          <i class="fas fa-microscope icon-gradient"></i>
+          <h2>Framework Overview</h2>
         </div>
         <div class="content-wrapper">
-            <p>
-                The BugCraft Framework processes bug reports through a two-stage pipeline:
-            </p>
-            <div class="framework-flow">
-                <!-- Input -->
-                <div class="framework-component input" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #f9f9f9;">
-                    <i class="fas fa-file-alt"></i>
-                    <h3>Bug Report</h3>
-                    <p>User-submitted crash report</p>
-                </div>
-                
-                <!-- Arrow -->
-                <div class="framework-arrow">
-                    <i class="fas fa-arrow-down"></i>
-                </div>
-                
-                <!-- Step 1: S2R Synthesizer -->
-                <div class="framework-component synthesizer" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #f9f9f9;">
-                    <div class="component-header">
-                        <i class="fas fa-code-branch"></i>
-                        <h3>S2R Synthesizer</h3>
-                    </div>
-                    <p>Transforms unstructured bug reports into clear, executable steps</p>
-                    <div class="feature-points">
-                        <p><i class="fas fa-check-circle success"></i> Wiki-powered knowledge enhancement</p>
-                        <p><i class="fas fa-check-circle success"></i> Multi-stage refinement pipeline</p>
-                        <p><i class="fas fa-check-circle success"></i> Smart step clustering system</p>
-                        <p><i class="fas fa-check-circle success"></i> Automated reasoning trajectories</p>
-                    </div>
-                </div>
-                
-                <!-- Arrow -->
-                <div class="framework-arrow">
-                    <i class="fas fa-arrow-down"></i>
-                </div>
-                
-                <!-- Step 2: Action Model -->
-                <div class="framework-component action-model" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #f9f9f9;">
-                    <div class="component-header">
-                        <i class="fas fa-robot"></i>
-                        <h3>Action Model Agent</h3>
-                    </div>
-                    <p>Executes synthesized steps in the game environment</p>
-                    <div class="feature-points">
-                        <p><i class="fas fa-check-circle success"></i> Intelligent step-by-step execution</p>
-                        <p><i class="fas fa-check-circle success"></i> Screen-based decision making</p>
-                        <p><i class="fas fa-check-circle success"></i> JSON API integration</p>
-                        <p><i class="fas fa-check-circle success"></i> Crash trajectory logging</p>
-                    </div>
-                </div>
-                
-                <!-- Arrow -->
-                <div class="framework-arrow">
-                    <i class="fas fa-arrow-down"></i>
-                </div>
-                
-                <!-- Output -->
-                <div class="framework-component output" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #f9f9f9;">
-                    <div class="outcome-points">
-                        <div class="outcome success">
-                            <i class="fas fa-check-circle"></i>
-                            <div class="outcome-text">
-                                <h4>Success</h4>
-                                <p>Bug successfully reproduced and crash trajectory logged</p>
-                            </div>
-                        </div>
-                        <div class="outcome failure">
-                            <i class="fas fa-times-circle"></i>
-                            <div class="outcome-text">
-                                <h4>Failure</h4>
-                                <p>Execution limit exceeded or unable to reproduce bug</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          <p>
+            The BugCraft Framework processes bug reports through a two-stage
+            pipeline:
+          </p>
+          <div class="framework-flow">
+            <!-- Input -->
+            <div
+              class="framework-component input"
+              style="
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                background-color: #f9f9f9;
+              "
+            >
+              <i class="fas fa-file-alt"></i>
+              <h3>Bug Report</h3>
+              <p>User-submitted crash report</p>
             </div>
+
+            <!-- Arrow -->
+            <div class="framework-arrow">
+              <i class="fas fa-arrow-down"></i>
+            </div>
+
+            <!-- Step 1: S2R Synthesizer -->
+            <div
+              class="framework-component synthesizer"
+              style="
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                background-color: #f9f9f9;
+              "
+            >
+              <div class="component-header">
+                <i class="fas fa-code-branch"></i>
+                <h3>S2R Synthesizer</h3>
+              </div>
+              <p>
+                Transforms unstructured bug reports into clear, executable steps
+              </p>
+              <div class="feature-points">
+                <p>
+                  <i class="fas fa-check-circle success"></i> Wiki-powered
+                  knowledge enhancement
+                </p>
+                <p>
+                  <i class="fas fa-check-circle success"></i> Multi-stage
+                  refinement pipeline
+                </p>
+                <p>
+                  <i class="fas fa-check-circle success"></i> Smart step
+                  clustering system
+                </p>
+                <p>
+                  <i class="fas fa-check-circle success"></i> Automated
+                  reasoning trajectories
+                </p>
+              </div>
+            </div>
+
+            <!-- Arrow -->
+            <div class="framework-arrow">
+              <i class="fas fa-arrow-down"></i>
+            </div>
+
+            <!-- Step 2: Action Model -->
+            <div
+              class="framework-component action-model"
+              style="
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                background-color: #f9f9f9;
+              "
+            >
+              <div class="component-header">
+                <i class="fas fa-robot"></i>
+                <h3>Action Model Agent</h3>
+              </div>
+              <p>Executes synthesized steps in the game environment</p>
+              <div class="feature-points">
+                <p>
+                  <i class="fas fa-check-circle success"></i> Intelligent
+                  step-by-step execution
+                </p>
+                <p>
+                  <i class="fas fa-check-circle success"></i> Screen-based
+                  decision making
+                </p>
+                <p>
+                  <i class="fas fa-check-circle success"></i> JSON API
+                  integration
+                </p>
+                <p>
+                  <i class="fas fa-check-circle success"></i> Crash trajectory
+                  logging
+                </p>
+              </div>
+            </div>
+
+            <!-- Arrow -->
+            <div class="framework-arrow">
+              <i class="fas fa-arrow-down"></i>
+            </div>
+
+            <!-- Output -->
+            <div
+              class="framework-component output"
+              style="
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                background-color: #f9f9f9;
+              "
+            >
+              <div class="outcome-points">
+                <div class="outcome success">
+                  <i class="fas fa-check-circle"></i>
+                  <div class="outcome-text">
+                    <h4>Success</h4>
+                    <p>
+                      Bug successfully reproduced and crash trajectory logged
+                    </p>
+                  </div>
+                </div>
+                <div class="outcome failure">
+                  <i class="fas fa-times-circle"></i>
+                  <div class="outcome-text">
+                    <h4>Failure</h4>
+                    <p>Execution limit exceeded or unable to reproduce bug</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-    </div>
-  </section>
+      </div>
+    </section>
 
     <!-- Results Section -->
     <section id="results" class="content-section">
@@ -391,212 +630,353 @@
           <h2>Results & Analysis</h2>
         </div>
         <div class="content-wrapper">
-            <p>
-                Our evaluation demonstrates that BugCraft successfully reproduced <strong>30.23%</strong> of crash bugs end-to-end on the BugCraft-Bench dataset (86 valid reports). This highlights the potential of LLM agents for automated bug reproduction in complex game environments.
-            </p>
-            <div class="results-grid">
-                <!-- End-to-End Performance -->
-                <div class="framework-component performance" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #f9f9f9;">
-                    <div class="component-header">
-                        <i class="fas fa-trophy"></i>
-                        <h3>End-to-End Performance</h3>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-value">30.23%</span>
-                        <span class="metric-label">Success Rate</span>
-                    </div>
-                    <p class="main-text">
-                        <i class="fas fa-check-circle"></i>
-                        Successfully reproduced 26 out of 86 crash bugs end-to-end
-                    </p>
-                </div>
-                
-                <!-- Step Synthesizer Results -->
-                <div class="framework-component synthesizer-results" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #f9f9f9;">
-                    <div class="component-header">
-                        <i class="fas fa-clipboard-list"></i>
-                        <h3>Step Synthesizer</h3>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-value">66.28%</span>
-                        <span class="metric-label">Accuracy</span>
-                    </div>
-                    <div class="main-text">
-                        <p><i class="fas fa-check-circle"></i> Generated correct plans for 57 out of 86 reports</p>
-                    </div>
-                    <div class="failure-types">
-                        <div class="failure-type">
-                            <i class="fas fa-times-circle"></i>
-                            <span>Wrong Command (48.28%)</span>
-                        </div>
-                        <div class="failure-type">
-                            <i class="fas fa-times-circle"></i>
-                            <span>Missing Step (34.49%)</span>
-                        </div>
-                        <div class="failure-type">
-                            <i class="fas fa-times-circle"></i>
-                            <span>Logic Error (31.03%)</span>
-                        </div>
-                    </div>
-                    <div class="evaluation-note">
-                        <p><i class="fas fa-info-circle"></i> Inter-rater agreement: Cohen's Kappa: 0.70, Percentage Agreement: 83.0%</p>
-                    </div>
-                </div>
-                
-                <!-- Arrow -->
-                <div class="framework-arrow results-arrow">
-                    <i class="fas fa-arrow-right"></i>
-                </div>
-                
-                <!-- Action Model Results -->
-                <div class="framework-component action-results" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #f9f9f9;">
-                    <div class="component-header">
-                        <i class="fas fa-robot"></i>
-                        <h3>Action Model</h3>
-                    </div>
-                    <div class="metric">
-                        <span class="metric-value">38.60%</span>
-                        <span class="metric-label">Success Rate</span>
-                    </div>
-                    <div class="main-text">
-                        <p><i class="fas fa-check-circle"></i> Successfully executed 22 out of 57 correct plans</p>
-                    </div>
-                    <div class="failure-types">
-                        <div class="failure-type">
-                            <i class="fas fa-times-circle"></i>
-                            <span>Agent Incapability (50.88%)</span>
-                            <ul class="sub-failures">
-                                <li>Stuck in Loop (19.30%)</li>
-                                <li>Poor Decision Making (29.82%)</li>
-                            </ul>
-                        </div>
-                        <div class="failure-type">
-                            <i class="fas fa-times-circle"></i>
-                            <span>Framework Incapability (7.02%)</span>
-                        </div>
-                        <div class="failure-type recovery">
-                            <i class="fas fa-sync"></i>
-                            <span>Recovery from Faulty Plans (13.79%)</span>
-                        </div>
-                    </div>
-                </div>
+          <p>
+            Our evaluation demonstrates that BugCraft successfully reproduced
+            <strong>30.23%</strong> of crash bugs end-to-end on the
+            BugCraft-Bench dataset (86 valid reports). This highlights the
+            potential of LLM agents for automated bug reproduction in complex
+            game environments.
+          </p>
+          <div class="results-grid">
+            <!-- End-to-End Performance -->
+            <div
+              class="framework-component performance"
+              style="
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                background-color: #f9f9f9;
+              "
+            >
+              <div class="component-header">
+                <i class="fas fa-trophy"></i>
+                <h3>End-to-End Performance</h3>
+              </div>
+              <div class="metric">
+                <span class="metric-value">30.23%</span>
+                <span class="metric-label">Success Rate</span>
+              </div>
+              <p class="main-text">
+                <i class="fas fa-check-circle"></i>
+                Successfully reproduced 26 out of 86 crash bugs end-to-end
+              </p>
             </div>
-            
-            <div class="key-takeaway" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #f9f9f9;">
-                <h3><i class="fas fa-lightbulb"></i> Key Takeaways</h3>
+
+            <!-- Step Synthesizer Results -->
+            <div
+              class="framework-component synthesizer-results"
+              style="
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                background-color: #f9f9f9;
+              "
+            >
+              <div class="component-header">
+                <i class="fas fa-clipboard-list"></i>
+                <h3>Step Synthesizer</h3>
+              </div>
+              <div class="metric">
+                <span class="metric-value">66.28%</span>
+                <span class="metric-label">Accuracy</span>
+              </div>
+              <div class="main-text">
                 <p>
-                    BugCraft demonstrates the potential of LLM agents for automated game bug reproduction. The Step Synthesizer shows promising capability (66.28% accuracy), while the Action Model's execution phase remains the major bottleneck (38.60% success rate with correct plans). The agent's ability to recover from faulty plans (13.79% recovery rate) suggests potential for improvement through enhanced decision-making and interaction capabilities.
+                  <i class="fas fa-check-circle"></i> Generated correct plans
+                  for 57 out of 86 reports
                 </p>
+              </div>
+              <div class="failure-types">
+                <div class="failure-type">
+                  <i class="fas fa-times-circle"></i>
+                  <span>Wrong Command (48.28%)</span>
+                </div>
+                <div class="failure-type">
+                  <i class="fas fa-times-circle"></i>
+                  <span>Missing Step (34.49%)</span>
+                </div>
+                <div class="failure-type">
+                  <i class="fas fa-times-circle"></i>
+                  <span>Logic Error (31.03%)</span>
+                </div>
+              </div>
+              <div class="evaluation-note">
+                <p>
+                  <i class="fas fa-info-circle"></i> Inter-rater agreement:
+                  Cohen's Kappa: 0.70, Percentage Agreement: 83.0%
+                </p>
+              </div>
             </div>
+
+            <!-- Arrow -->
+            <div class="framework-arrow results-arrow">
+              <i class="fas fa-arrow-right"></i>
+            </div>
+
+            <!-- Action Model Results -->
+            <div
+              class="framework-component action-results"
+              style="
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                background-color: #f9f9f9;
+              "
+            >
+              <div class="component-header">
+                <i class="fas fa-robot"></i>
+                <h3>Action Model</h3>
+              </div>
+              <div class="metric">
+                <span class="metric-value">38.60%</span>
+                <span class="metric-label">Success Rate</span>
+              </div>
+              <div class="main-text">
+                <p>
+                  <i class="fas fa-check-circle"></i> Successfully executed 22
+                  out of 57 correct plans
+                </p>
+              </div>
+              <div class="failure-types">
+                <div class="failure-type">
+                  <i class="fas fa-times-circle"></i>
+                  <span>Agent Incapability (50.88%)</span>
+                  <ul class="sub-failures">
+                    <li>Stuck in Loop (19.30%)</li>
+                    <li>Poor Decision Making (29.82%)</li>
+                  </ul>
+                </div>
+                <div class="failure-type">
+                  <i class="fas fa-times-circle"></i>
+                  <span>Framework Incapability (7.02%)</span>
+                </div>
+                <div class="failure-type recovery">
+                  <i class="fas fa-sync"></i>
+                  <span>Recovery from Faulty Plans (13.79%)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="key-takeaway"
+            style="
+              box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+              background-color: #f9f9f9;
+            "
+          >
+            <h3><i class="fas fa-lightbulb"></i> Key Takeaways</h3>
+            <p>
+              BugCraft demonstrates the potential of LLM agents for automated
+              game bug reproduction. The Step Synthesizer shows promising
+              capability (66.28% accuracy), while the Action Model's execution
+              phase remains the major bottleneck (38.60% success rate with
+              correct plans). The agent's ability to recover from faulty plans
+              (13.79% recovery rate) suggests potential for improvement through
+              enhanced decision-making and interaction capabilities.
+            </p>
+          </div>
         </div>
       </div>
     </section>
 
-  <!-- Video Section -->
-  <section id="video" class="content-section">
-    <div class="container">
-      <div class="section-header">
-        <i class="fas fa-play-circle icon-gradient"></i>
-        <h2>Watch Our Video</h2>
+    <!-- Video Section -->
+    <section id="video" class="content-section">
+      <div class="container">
+        <div class="section-header">
+          <i class="fas fa-play-circle icon-gradient"></i>
+          <h2>Watch Our Video</h2>
+        </div>
+        <div
+          class="video-container"
+          style="
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            margin: 20px 0;
+          "
+        >
+          <iframe
+            style="
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 100%;
+            "
+            src="https://www.youtube.com/embed/qvfOasbENJ4"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          >
+          </iframe>
+        </div>
       </div>
-      <div class="video-container" style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; margin: 20px 0;">
-        <iframe 
-          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
-          src="https://www.youtube.com/embed/qvfOasbENJ4" 
-          frameborder="0" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          allowfullscreen>
-        </iframe>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Read More Call-out Section -->
-  <section id="read-more" class="content-section">
-    <div class="container">
-      <div class="read-more-callout" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); background-color: #f9f9f9;">
-        <div class="callout-content">
-          <i class="fas fa-book-open"></i>
-          <h3>Read the Full Paper</h3>
-          <p>For a comprehensive understanding of our methodology, detailed results, and in-depth analysis of BugCraft's performance in automated game bug reproduction, please read our full paper.</p>
-          <div class="callout-buttons">
-            <a href="https://arxiv.org/abs/2503.20036" class="header-button" target="_blank" rel="noopener noreferrer">
-              <i class="fas fa-file-alt"></i> Read on arXiv
-            </a>
-            <a href="https://github.com/erayyap/bugcraft" class="header-button" target="_blank" rel="noopener noreferrer">
-              <i class="fab fa-github"></i> View Code
-            </a>
-            <a href="https://huggingface.co/spaces/erayyap/bugcraft" class="header-button" target="_blank" rel="noopener noreferrer">
-              <i class="fas fa-database"></i> View Dataset
-            </a>
+    <!-- Read More Call-out Section -->
+    <section id="read-more" class="content-section">
+      <div class="container">
+        <div
+          class="read-more-callout"
+          style="
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+          "
+        >
+          <div class="callout-content">
+            <i class="fas fa-book-open"></i>
+            <h3>Read the Full Paper</h3>
+            <p>
+              For a comprehensive understanding of our methodology, detailed
+              results, and in-depth analysis of BugCraft's performance in
+              automated game bug reproduction, please read our full paper.
+            </p>
+            <div class="callout-buttons">
+              <a
+                href="https://arxiv.org/abs/2503.20036"
+                class="header-button"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i class="fas fa-file-alt"></i> Read on arXiv
+              </a>
+              <a
+                href="https://github.com/erayyap/bugcraft"
+                class="header-button"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i class="fab fa-github"></i> View Code
+              </a>
+              <a
+                href="https://huggingface.co/spaces/erayyap/bugcraft"
+                class="header-button"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i class="fas fa-database"></i> View Dataset
+              </a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Citation Section -->
-  <section id="citation" class="content-section">
-    <div class="container">
-      <div class="section-header">
-        <i class="fas fa-quote-right icon-gradient"></i>
-        <h2>How to Cite</h2>
-      </div>
-      <div class="content-wrapper">
-        <p>If you use BugCraft in your research, please cite our paper:</p>
-        <div class="citation-box" style="background-color: #f9f9f9; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
-          <pre style="margin: 0; white-space: pre-wrap; font-family: monospace; font-size: 0.9em;">
+    <!-- Citation Section -->
+    <section id="citation" class="content-section">
+      <div class="container">
+        <div class="section-header">
+          <i class="fas fa-quote-right icon-gradient"></i>
+          <h2>How to Cite</h2>
+        </div>
+        <div class="content-wrapper">
+          <p>If you use BugCraft in your research, please cite our paper:</p>
+          <div
+            class="citation-box"
+            style="
+              background-color: #f9f9f9;
+              padding: 20px;
+              border-radius: 8px;
+              box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            "
+          >
+            <pre
+              style="
+                margin: 0;
+                white-space: pre-wrap;
+                font-family: monospace;
+                font-size: 0.9em;
+              "
+            >
 @article{yapagci2024bugcraft,
   title={End-to-End Crash Bug Reproduction Using LLM Agents in Minecraft},
   author={Yapağcı, Eray and Öztürk, Yavuz Alp Sencer and Tüzün, Eray},
   journal={arXiv preprint arXiv:2503.20036},
   year={2024}
-}</pre>
-          <div class="citation-actions" style="margin-top: 15px;">
-            <button class="header-button" onclick="copyCitation()" style="margin-right: 10px;">
-              <i class="fas fa-copy"></i> Copy BibTeX
-            </button>
-            <a href="https://arxiv.org/abs/2503.20036" class="header-button" target="_blank" rel="noopener noreferrer">
-              <i class="fas fa-external-link-alt"></i> View on arXiv
-            </a>
+}</pre
+            >
+            <div class="citation-actions" style="margin-top: 15px">
+              <button
+                class="header-button"
+                onclick="copyCitation()"
+                style="margin-right: 10px"
+              >
+                <i class="fas fa-copy"></i> Copy BibTeX
+              </button>
+              <a
+                href="https://arxiv.org/abs/2503.20036"
+                class="header-button"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <i class="fas fa-external-link-alt"></i> View on arXiv
+              </a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- Contact Section -->
-  <section id="contact" class="content-section">
-    <div class="container">
-       <div class="section-header">
-            <i class="fas fa-envelope icon-gradient"></i>
-            <h2>Contact</h2>
+    <!-- Contact Section -->
+    <section id="contact" class="content-section">
+      <div class="container">
+        <div class="section-header">
+          <i class="fas fa-envelope icon-gradient"></i>
+          <h2>Contact</h2>
         </div>
-      <div class="content-wrapper">
-        <p>
-          For questions, feedback, or collaborations, please reach out to us:
-        </p>
-        <ul class="contact-list">
-          <li><i class="fas fa-user"></i> Eray Yapağcı - <a href="mailto:eray.yapagci@ug.bilkent.edu.tr" class="contact-link">eray.yapagci@ug.bilkent.edu.tr</a></li>
-          <li><i class="fas fa-user"></i> Yavuz Alp Sencer Öztürk - <a href="mailto:alp.ozturk@ug.bilkent.edu.tr" class="contact-link">alp.ozturk@ug.bilkent.edu.tr</a></li>
-          <li><i class="fas fa-user"></i> Eray Tüzün - <a href="mailto:eraytuzun@cs.bilkent.edu.tr" class="contact-link">eraytuzun@cs.bilkent.edu.tr</a></li>
-        </ul>
+        <div class="content-wrapper">
+          <p>
+            For questions, feedback, or collaborations, please reach out to us:
+          </p>
+          <ul class="contact-list">
+            <li>
+              <i class="fas fa-user"></i> Eray Yapağcı -
+              <a
+                href="mailto:eray.yapagci@ug.bilkent.edu.tr"
+                class="contact-link"
+                >eray.yapagci@ug.bilkent.edu.tr</a
+              >
+            </li>
+            <li>
+              <i class="fas fa-user"></i> Yavuz Alp Sencer Öztürk -
+              <a href="mailto:alp.ozturk@ug.bilkent.edu.tr" class="contact-link"
+                >alp.ozturk@ug.bilkent.edu.tr</a
+              >
+            </li>
+            <li>
+              <i class="fas fa-user"></i> Eray Tüzün -
+              <a href="mailto:eraytuzun@cs.bilkent.edu.tr" class="contact-link"
+                >eraytuzun@cs.bilkent.edu.tr</a
+              >
+            </li>
+          </ul>
+        </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-  <footer>
-    <div class="container">
-      <p>© 2025 Computer Engineering Department, Bilkent University.</p>
-      <div class="social-links">
-        <!-- Updated placeholder links -->
-        <a href="https://github.com/erayyap/bugcraft" class="social-link" aria-label="GitHub Repository" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
-        <a href="https://huggingface.co/spaces/erayyap/bugcraft" class="social-link" aria-label="Hugging Face Space" target="_blank" rel="noopener noreferrer"><i class="fas fa-link"></i></a>
+    <footer>
+      <div class="container">
+        <p>© 2025 Computer Engineering Department, Bilkent University.</p>
+        <div class="social-links">
+          <!-- Updated placeholder links -->
+          <a
+            href="https://github.com/erayyap/bugcraft"
+            class="social-link"
+            aria-label="GitHub Repository"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><i class="fab fa-github"></i
+          ></a>
+          <a
+            href="https://huggingface.co/spaces/erayyap/bugcraft"
+            class="social-link"
+            aria-label="Hugging Face Space"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><i class="fas fa-link"></i
+          ></a>
+        </div>
       </div>
-    </div>
-  </footer>
+    </footer>
 
-  <!-- JavaScript (keep the smooth scroll part) -->
-  <script src="script_modern.js"></script>
-</body>
+    <!-- JavaScript (keep the smooth scroll part) -->
+    <script src="script_modern.js"></script>
+  </body>
 </html>
