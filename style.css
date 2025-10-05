@@ -29,6 +29,134 @@ body {
   position: relative;
 }
 
+/* Scroll-triggered text glitch */
+.scroll-glitch {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  white-space: normal;
+  transform: translateZ(0);
+}
+
+.scroll-glitch::before,
+.scroll-glitch::after {
+  content: attr(data-glitch-content);
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  pointer-events: none;
+  color: inherit;
+  mix-blend-mode: screen;
+}
+
+.scroll-glitch::before {
+  color: rgba(75, 255, 249, 0.85);
+}
+
+.scroll-glitch::after {
+  color: rgba(255, 56, 142, 0.8);
+}
+
+.scroll-glitch.is-glitching {
+  animation: scroll-glitch-base 0.75s steps(1, end) 2;
+}
+
+.scroll-glitch.is-glitching::before {
+  opacity: 1;
+  animation: scroll-glitch-before 0.75s steps(1, end) 2;
+}
+
+.scroll-glitch.is-glitching::after {
+  opacity: 1;
+  animation: scroll-glitch-after 0.75s steps(1, end) 2;
+}
+
+@keyframes scroll-glitch-base {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  12% {
+    transform: translate3d(-2px, 1px, 0);
+  }
+  28% {
+    transform: translate3d(2px, -1px, 0);
+  }
+  45% {
+    transform: translate3d(-1px, 2px, 0);
+  }
+  60% {
+    transform: translate3d(3px, 0, 0);
+  }
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes scroll-glitch-before {
+  0% {
+    clip-path: inset(0 0 65% 0);
+    transform: translate3d(0, 0, 0);
+    opacity: 0.4;
+  }
+  18% {
+    clip-path: inset(20% 0 40% 0);
+    transform: translate3d(-3px, -2px, 0);
+    opacity: 0.85;
+  }
+  45% {
+    clip-path: inset(35% 0 25% 0);
+    transform: translate3d(2px, 1px, 0);
+    opacity: 0.6;
+  }
+  70% {
+    clip-path: inset(10% 0 55% 0);
+    transform: translate3d(-2px, 2px, 0);
+    opacity: 0.8;
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes scroll-glitch-after {
+  0% {
+    clip-path: inset(55% 0 0 0);
+    transform: translate3d(0, 0, 0);
+    opacity: 0.45;
+  }
+  22% {
+    clip-path: inset(35% 0 15% 0);
+    transform: translate3d(3px, 1px, 0);
+    opacity: 0.9;
+  }
+  48% {
+    clip-path: inset(60% 0 5% 0);
+    transform: translate3d(-2px, -2px, 0);
+    opacity: 0.65;
+  }
+  72% {
+    clip-path: inset(15% 0 35% 0);
+    transform: translate3d(2px, -1px, 0);
+    opacity: 0.85;
+  }
+  100% {
+    clip-path: inset(0 0 0 0);
+    transform: translate3d(0, 0, 0);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-glitch,
+  .scroll-glitch::before,
+  .scroll-glitch::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 /* Announcement Bar */
 .announcement-bar {
   background-image: url('figures/minecraft-dirt-texture.jpg');
@@ -40,7 +168,8 @@ body {
   width: 100%;
   box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.3), 0 4px 0 rgba(0, 0, 0, 0.2);
   z-index: 1002;
-  position: relative;
+  position: fixed;  /* Keep only this one, remove the duplicate */
+  top: 0;           /* Keep this */
   border-bottom: 2px solid rgba(0, 0, 0, 0.5);
   image-rendering: pixelated;
 }
@@ -65,17 +194,101 @@ body {
   padding: 0 2rem;
 }
 
+/* Scroll-driven Hero */
+#hero-scroll {
+  position: relative;
+  min-height: 360vh;
+  padding: clamp(60px, 12vh, 140px) 0;
+  overflow: visible;
+  background: linear-gradient(180deg, rgba(8, 24, 37, 0.92) 0%, rgba(9, 32, 50, 0.88) 55%, rgba(15, 40, 61, 0));
+}
+
+.hero-stage {
+  position: relative;
+  min-height: 600px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  isolation: isolate;
+  --glitch-progress: 0;
+  --glitch-fade: 0;
+  --glitch-overlay: 0;
+  --glitch-shift-x: 0px;
+  --glitch-shift-y: 0px;
+  --freeze-strength: 0;
+  transition: filter 0.6s ease, transform 0.4s ease;
+}
+
+.hero-stage::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 30% 20%, rgba(255, 255, 255, 0.22), transparent 55%),
+    linear-gradient(180deg, rgba(49, 79, 124, 0.3), rgba(1, 10, 24, 0.55));
+  mix-blend-mode: screen;
+  opacity: calc(var(--freeze-strength) * 0.85);
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+  z-index: 6;
+}
+
+.hero-stage.glitch-freeze {
+  --freeze-strength: 0.65;
+  cursor: wait;
+}
+
+.hero-stage.glitch-crash {
+  --freeze-strength: 1;
+}
+
+.hero-stage.glitch-crash .minecraft-buttons,
+.hero-stage.glitch-crash .minecraft-subtitle,
+.hero-stage.glitch-crash .minecraft-paper-title {
+  filter: blur(1px);
+}
+
+.hero-stage.glitch-complete #minecraft-hero {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.6s ease;
+}
+
+.hero-stage.glitch-complete .crash-dialog {
+  opacity: 0;
+  transform: translate(-50%, -52%) scale(0.92);
+  pointer-events: none;
+}
+
+.hero-stage.glitch-complete .bug-swarm {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.hero-stage.glitch-complete .hero-glitch-overlay {
+  opacity: 0;
+}
+
+
 /* Minecraft Hero Section */
 #minecraft-hero {
-  position: relative;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translate3d(calc(var(--glitch-shift-x, 0px) * 0.2), calc(var(--glitch-shift-y, 0px) * 0.2), 0);
   width: 100%;
-  height: calc(100vh - clamp(40px, 8vw, 50px)); /* Subtract responsive grass footer */
-  min-height: 500px;
+  height: calc(100vh - clamp(40px, 8vw, 50px));
+  min-height: 520px;
+  max-width: 100vw;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  padding-bottom: clamp(40px, 8vw, 50px);
   overflow: hidden;
+  opacity: calc(1 - var(--glitch-fade, 0));
+  transition: opacity 0.25s ease, transform 0.35s ease;
+  z-index: 3;
 }
 
 .minecraft-background {
@@ -89,6 +302,7 @@ body {
   background-position: center;
   filter: blur(5px);
   z-index: 1;
+  transition: filter 0.3s ease, transform 0.2s ease;
 }
 
 .minecraft-background::after {
@@ -108,6 +322,7 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 0.5rem;
+  transition: filter 0.2s ease;
 }
 
 .minecraft-logo {
@@ -199,6 +414,278 @@ body {
 .minecraft-button:active {
   transform: translateY(0);
   box-shadow: inset 2px 2px 0px rgba(0, 0, 0, 0.5);
+}
+
+.hero-stage.is-glitching #minecraft-hero {
+  filter: brightness(0.95) contrast(1.1) saturate(1.05);
+}
+
+.hero-stage.is-glitching .minecraft-background {
+  transform: translate(var(--glitch-shift-x), var(--glitch-shift-y)) scale(calc(1 + var(--glitch-progress) * 0.06));
+  filter: blur(5px) brightness(0.9) contrast(1.2);
+}
+
+.hero-stage.is-glitching .minecraft-menu {
+  transform: translate(calc(var(--glitch-shift-x) * 0.45), calc(var(--glitch-shift-y) * 0.45));
+  filter: hue-rotate(calc(var(--glitch-progress) * -12deg)) saturate(calc(1 + var(--glitch-progress) * 0.6));
+}
+
+.hero-stage.glitch-breakdown .minecraft-paper-title,
+.hero-stage.glitch-breakdown .minecraft-subtitle {
+  text-shadow: 0 0 6px rgba(0, 255, 204, 0.7), 0 0 16px rgba(0, 139, 255, 0.4);
+}
+
+.hero-stage.glitch-fading #minecraft-hero {
+  filter: grayscale(0.4) contrast(1.4);
+}
+
+.hero-stage.glitch-freeze #minecraft-hero {
+  filter: grayscale(0.6) contrast(1.15) blur(0.6px);
+}
+
+.hero-stage.glitch-crash #minecraft-hero {
+  filter: grayscale(0.85) contrast(1.25) blur(1.3px);
+}
+
+.hero-glitch-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  opacity: calc(var(--glitch-overlay, 0) * (1 - var(--glitch-fade, 0)));  /* Add fade multiplier */
+  transition: opacity 0.3s ease;
+  mix-blend-mode: lighten;
+}
+.glitch-noise {
+  position: absolute;
+  inset: -5%;
+  background: repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.06) 0px,
+      rgba(255, 255, 255, 0.06) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+  opacity: 0.6;
+  animation: noiseShift 4s steps(2) infinite;
+}
+
+.hero-stage.glitch-freeze .glitch-noise,
+.hero-stage.glitch-freeze .glitch-noise--alt {
+  animation-duration: 6s;
+  opacity: 0.8;
+}
+
+.hero-stage.glitch-crash .glitch-noise,
+.hero-stage.glitch-crash .glitch-noise--alt,
+.hero-stage.glitch-crash .glitch-scanline {
+  animation-play-state: paused;
+  opacity: 1;
+}
+
+.glitch-noise--alt {
+  background: repeating-linear-gradient(
+      90deg,
+      rgba(40, 255, 220, 0.08) 0px,
+      rgba(40, 255, 220, 0.08) 3px,
+      transparent 3px,
+      transparent 6px
+    );
+  mix-blend-mode: screen;
+  opacity: 0.7;
+  animation-duration: 2.2s;
+}
+
+.glitch-scanline {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.4) 50%,
+    rgba(0, 0, 0, 0) 100%
+  );
+  background-size: 100% 4px;
+  opacity: 0.45;
+  animation: scanline 1.5s linear infinite;
+}
+
+.bug-swarm {
+  position: fixed;  /* Change from absolute */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 5;
+}
+
+.glitch-bug {
+  position: fixed;
+  top: var(--bug-y, 50%);
+  left: var(--bug-x, 50%);
+  width: clamp(32px, 6vw, 64px);
+  transform: translate(-50%, -50%) scale(0.2);
+  opacity: 0;
+  filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.4));
+  transition: opacity 0.25s ease;
+}
+
+.hero-stage.glitch-freeze .glitch-bug {
+  opacity: 0.45;
+}
+
+.hero-stage.glitch-crash .glitch-bug {
+  opacity: 0.65;
+  filter: grayscale(0.6) drop-shadow(0 0 14px rgba(0, 204, 255, 0.35));
+}
+
+.glitch-bug img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@keyframes noiseShift {
+  0% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(2px, -1px, 0); }
+  100% { transform: translate3d(-2px, 2px, 0); }
+}
+
+@keyframes scanline {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 4px; }
+}
+
+.crash-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -46%) scale(0.95);
+  width: clamp(280px, 60vw, 420px);
+  background: linear-gradient(180deg, #f7f7f7 0%, #e7e7e7 100%);
+  border: 1px solid #8aa1c6;
+  border-radius: 6px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.45s ease, transform 0.45s ease;
+  z-index: 8;
+  font-family: 'Segoe UI', 'Inter', sans-serif;
+  color: #1e1e1e;
+}
+
+.crash-dialog__titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 0.9rem;
+  background: linear-gradient(90deg, #2b579a 0%, #1b386f 100%);
+  color: white;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  border-radius: 5px 5px 0 0;
+}
+
+.crash-dialog__title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+}
+
+.crash-dialog__controls {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.crash-dialog__control {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.6);
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.25);
+}
+
+.crash-dialog__body {
+  display: flex;
+  gap: 1rem;
+  padding: 1.2rem 1.4rem 0.6rem;
+}
+
+.crash-dialog__icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #2b579a 0%, #5c88d6 100%);
+  position: relative;
+  flex-shrink: 0;
+}
+
+.crash-dialog__icon::before,
+.crash-dialog__icon::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 4px;
+  height: 26px;
+  background: white;
+  border-radius: 2px;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.crash-dialog__icon::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.crash-dialog__headline {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+}
+
+.crash-dialog__sub {
+  font-size: 0.85rem;
+  color: #333;
+}
+
+.crash-dialog__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.6rem 1.4rem 1.2rem;
+}
+
+.crash-dialog__button {
+  background: linear-gradient(180deg, #fafafa 0%, #dedede 100%);
+  border: 1px solid #8aa1c6;
+  border-radius: 4px;
+  padding: 0.55rem 0.75rem;
+  font-size: 0.88rem;
+  color: #1f314f;
+  text-align: left;
+  cursor: default;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.crash-dialog__button--primary {
+  background: linear-gradient(180deg, #2b579a 0%, #1b386f 100%);
+  color: #f0f4ff;
+  border-color: #1b386f;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+
+.hero-stage.glitch-crash .crash-dialog {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
+}
+
+.hero-stage.glitch-crash .crash-dialog__button:hover {
+  border-color: #6b83ad;
+}
+
+.hero-stage.glitch-crash .crash-dialog__button--primary:hover {
+  border-color: #274a85;
 }
 
 .minecraft-footer {
@@ -332,6 +819,11 @@ header {
     padding: 0 1.5rem;
   }
 
+  #hero-scroll {
+    min-height: 360vh;
+    padding: clamp(50px, 10vh, 110px) 0;
+  }
+
   .minecraft-logo {
     max-width: 85%;
   }
@@ -359,9 +851,19 @@ header {
     min-height: 100svh; /* Use small viewport height for mobile */
   }
 
+  #hero-scroll {
+    min-height: 320vh;
+    padding: clamp(44px, 12vh, 96px) 0;
+  }
+
+  .hero-stage {
+    position: relative;
+    min-height: 480px;
+  }
+
   #minecraft-hero {
-    min-height: 450px;
-    height: calc(100svh - clamp(40px, 8vw, 50px)); /* Use small viewport height */
+    height: calc(100% - clamp(32px, 12vw, 44px));
+    padding-bottom: clamp(32px, 12vw, 44px);
   }
 
   .grass-footer {
@@ -375,6 +877,10 @@ header {
     position: fixed !important;
     display: block !important;
     visibility: visible !important;
+  }
+
+  .glitch-bug {
+    width: clamp(24px, 14vw, 52px);
   }
 
   .minecraft-logo {

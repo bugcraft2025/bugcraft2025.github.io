@@ -22,36 +22,69 @@
     <p><strong>Accepted to ASE 2025</strong> - 40th IEEE/ACM International Conference on Automated Software Engineering</p>
   </div>
 
-  <!-- Minecraft-style Hero Section -->
-  <section id="minecraft-hero">
-    <div class="minecraft-background"></div>
-    <div class="minecraft-menu">
-      <img src="figures/title.png" alt="BugCraft - Agents in the Sandbox" class="minecraft-logo" />
-      <div class="minecraft-paper-title">
-        <p>End-to-End Crash Bug Reproduction for Minecraft</p>
-      </div>
-      <div class="minecraft-subtitle">
-        <p>Eray Yapagci, Yavuz Alp Sencer Ozturk, Eray Tuzun</p>
-        <p>Computer Engineering Department</p>
-        <p>Bilkent University</p>
-      </div>
-      <div class="minecraft-buttons">
-        <a href="#leaderboard" class="minecraft-button">Leaderboard</a>
-        <a href="#abstract" class="minecraft-button">More Details</a>
-        <a href="https://arxiv.org/abs/2503.20036" target="_blank" rel="noopener noreferrer" class="minecraft-button">View Paper</a>
-        <div class="minecraft-button-row">
-          <a href="https://github.com/erayyap/bugcraft" target="_blank" rel="noopener noreferrer" class="minecraft-button minecraft-button-half">GitHub</a>
-          <button onclick="openSettingsModal()" class="minecraft-button minecraft-button-half">Options...</button>
+  <!-- Scroll-driven Hero Experience -->
+  <section id="hero-scroll" aria-label="BugCraft hero experience">
+    <div class="hero-stage" data-glitch-stage>
+      <div id="minecraft-hero">
+        <div class="minecraft-background"></div>
+        <div class="minecraft-menu">
+          <img src="figures/title.png" alt="BugCraft - Agents in the Sandbox" class="minecraft-logo" />
+          <div class="minecraft-paper-title">
+            <p>End-to-End Crash Bug Reproduction for Minecraft</p>
+          </div>
+          <div class="minecraft-subtitle">
+            <p>Eray Yapagci, Yavuz Alp Sencer Ozturk, Eray Tuzun</p>
+            <p>Computer Engineering Department</p>
+            <p>Bilkent University</p>
+          </div>
+          <div class="minecraft-buttons">
+            <a href="#leaderboard" class="minecraft-button">Leaderboard</a>
+            <a href="#abstract" class="minecraft-button">More Details</a>
+            <a href="https://arxiv.org/abs/2503.20036" target="_blank" rel="noopener noreferrer" class="minecraft-button">View Paper</a>
+            <div class="minecraft-button-row">
+              <a href="https://github.com/erayyap/bugcraft" target="_blank" rel="noopener noreferrer" class="minecraft-button minecraft-button-half">GitHub</a>
+              <button onclick="openSettingsModal()" class="minecraft-button minecraft-button-half">Options...</button>
+            </div>
+          </div>
+        </div>
+        <div class="minecraft-footer minecraft-footer-left">
+          <p>Agents In The Sandbox v1.0.0</p>
+        </div>
+        <div class="minecraft-footer minecraft-footer-right">
+          <p>Eray Yapagci, Yavuz Alp Sencer Ozturk, Eray Tuzun</p>
+          <p>Computer Engineering Department</p>
+          <p>Bilkent University</p>
         </div>
       </div>
-    </div>
-    <div class="minecraft-footer minecraft-footer-left">
-      <p>Agents In The Sandbox v1.0.0</p>
-    </div>
-    <div class="minecraft-footer minecraft-footer-right">
-      <p>Eray Yapagci, Yavuz Alp Sencer Ozturk, Eray Tuzun</p>
-      <p>Computer Engineering Department</p>
-      <p>Bilkent University</p>
+
+      <div class="hero-glitch-overlay" aria-hidden="true">
+        <div class="glitch-noise"></div>
+        <div class="glitch-noise glitch-noise--alt"></div>
+        <div class="glitch-scanline"></div>
+        <div class="bug-swarm" data-bug-swarm></div>
+      </div>
+
+      <div class="crash-dialog" data-crash-modal role="alertdialog" aria-live="assertive" aria-hidden="true">
+        <div class="crash-dialog__titlebar">
+          <div class="crash-dialog__title">Minecraft</div>
+          <div class="crash-dialog__controls" aria-hidden="true">
+            <span class="crash-dialog__control"></span>
+            <span class="crash-dialog__control"></span>
+            <span class="crash-dialog__control"></span>
+          </div>
+        </div>
+        <div class="crash-dialog__body">
+          <div class="crash-dialog__icon" aria-hidden="true"></div>
+          <div class="crash-dialog__content">
+            <p class="crash-dialog__headline">Minecraft is not responding</p>
+            <p class="crash-dialog__sub">If you close the program, you might lose information.</p>
+          </div>
+        </div>
+        <div class="crash-dialog__actions">
+          <button type="button" class="crash-dialog__button crash-dialog__button--primary">Wait for the program to respond</button>
+          <button type="button" class="crash-dialog__button">Close the program</button>
+        </div>
+      </div>
     </div>
   </section>
 
