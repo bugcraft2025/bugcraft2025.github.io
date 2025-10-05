@@ -44,7 +44,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Copy citation to clipboard
 function copyCitation() {
-    const citationText = document.getElementById('citation-text').textContent;
+    const citationText = document.getElementById('citation-text').innerText;
+
+    // Fallback for older browsers
+    if (!navigator.clipboard) {
+        // Create temporary textarea
+        const textArea = document.createElement('textarea');
+        textArea.value = citationText;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-999999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+
+        try {
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+
+            // Show success feedback
+            const button = event.target.closest('button');
+            const originalHTML = button.innerHTML;
+            button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+            button.style.backgroundColor = 'rgba(100, 255, 100, 0.3)';
+
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+                button.style.backgroundColor = '';
+            }, 2000);
+        } catch (err) {
+            document.body.removeChild(textArea);
+            console.error('Failed to copy citation:', err);
+            alert('Failed to copy citation. Please copy manually.');
+        }
+        return;
+    }
+
     navigator.clipboard.writeText(citationText).then(() => {
         // Show success feedback
         const button = event.target.closest('button');
