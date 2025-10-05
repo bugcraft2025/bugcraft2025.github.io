@@ -32,6 +32,7 @@
         <p>Computer Engineering Department, Bilkent University</p>
       </div>
       <div class="minecraft-buttons">
+        <a href="#leaderboard" class="minecraft-button">Leaderboard</a>
         <a href="#abstract" class="minecraft-button">More Details</a>
         <a href="https://arxiv.org/abs/2503.20036" target="_blank" rel="noopener noreferrer" class="minecraft-button">View Paper</a>
         <a href="https://github.com/erayyap/bugcraft" target="_blank" rel="noopener noreferrer" class="minecraft-button">GitHub</a>
@@ -41,6 +42,155 @@
     <div class="minecraft-footer">
       <p>Eray Yapağcı, Yavuz Alp Sencer Öztürk, Eray Tüzün</p>
       <p>Computer Engineering Department, Bilkent University</p>
+    </div>
+  </section>
+
+  <!-- Leaderboard Section -->
+  <section id="leaderboard" class="content-section">
+    <div class="container">
+      <h2><i class="fas fa-trophy"></i> Leaderboard</h2>
+      <div class="content-wrapper">
+        <div class="leaderboard-container">
+          <div class="tab-group">
+            <button class="tab-button active" data-tab="end-to-end">
+              End-to-End
+            </button>
+            <button class="tab-button" data-tab="synthesizer">
+              Step Synthesizer
+            </button>
+            <button class="tab-button" data-tab="action">Action Model</button>
+          </div>
+          <div class="table-scroll">
+            <table class="leaderboard-table" id="end-to-end-table">
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th>% Success</th>
+                  <th>Org</th>
+                  <th>Date</th>
+                  <th>Logs</th>
+                  <th>Trajs</th>
+                  <th>Site</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="model-cell">
+                    <span class="emoji">🤖</span>
+                    <span class="model-text">BugCraft End-to-End</span>
+                  </td>
+                  <td class="percent-cell">34.9</td>
+                  <td class="org-cell">
+                    <img
+                      src="figures/bilkent-logo.png"
+                      alt="Bilkent"
+                      class="org-icon"
+                    />
+                  </td>
+                  <td class="date-cell">
+                    <span class="date-badge">2025-02-07</span>
+                  </td>
+                  <td class="check-cell"><i class="fas fa-check"></i></td>
+                  <td class="check-cell"><i class="fas fa-check"></i></td>
+                  <td class="link-cell">
+                    <a href="#results" class="link-icon"
+                      ><i class="fas fa-link"></i
+                    ></a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table
+              class="leaderboard-table"
+              id="synthesizer-table"
+              style="display: none"
+            >
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th>% Accuracy</th>
+                  <th>Org</th>
+                  <th>Date</th>
+                  <th>Logs</th>
+                  <th>Trajs</th>
+                  <th>Site</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="model-cell">
+                    <span class="emoji">🧠</span>
+                    <span class="model-text">BugCraft Step Synthesizer</span>
+                  </td>
+                  <td class="percent-cell">66.28</td>
+                  <td class="org-cell">
+                    <img
+                      src="figures/bilkent-logo.png"
+                      alt="Bilkent"
+                      class="org-icon"
+                    />
+                  </td>
+                  <td class="date-cell">
+                    <span class="date-badge">2025-02-07</span>
+                  </td>
+                  <td class="check-cell"><i class="fas fa-check"></i></td>
+                  <td class="check-cell"><i class="fas fa-check"></i></td>
+                  <td class="link-cell">
+                    <a href="#results" class="link-icon"
+                      ><i class="fas fa-link"></i
+                    ></a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table
+              class="leaderboard-table"
+              id="action-table"
+              style="display: none"
+            >
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th>% Success</th>
+                  <th>Org</th>
+                  <th>Date</th>
+                  <th>Logs</th>
+                  <th>Trajs</th>
+                  <th>Site</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="model-cell">
+                    <span class="emoji">⚡</span>
+                    <span class="model-text">BugCraft Action Model</span>
+                  </td>
+                  <td class="percent-cell">38.60</td>
+                  <td class="org-cell">
+                    <img
+                      src="figures/bilkent-logo.png"
+                      alt="Bilkent"
+                      class="org-icon"
+                    />
+                  </td>
+                  <td class="date-cell">
+                    <span class="date-badge">2025-02-07</span>
+                  </td>
+                  <td class="check-cell"><i class="fas fa-check"></i></td>
+                  <td class="check-cell"><i class="fas fa-check"></i></td>
+                  <td class="link-cell">
+                    <a href="#results" class="link-icon"
+                      ><i class="fas fa-link"></i
+                    ></a>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -271,6 +421,24 @@
     </div>
   </section>
 
+  <!-- Video Section -->
+  <section id="video" class="content-section">
+    <div class="container">
+      <h2><i class="fas fa-play-circle"></i> Watch Our Video</h2>
+      <div class="content-wrapper">
+        <div class="video-container">
+          <iframe
+            src="https://www.youtube.com/embed/qvfOasbENJ4"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+          >
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Dataset Section -->
   <section id="dataset" class="content-section">
     <div class="container">
@@ -279,8 +447,77 @@
         <p>
           We introduce BugCraft-Bench, a curated dataset of 86 Minecraft crash bug reports, carefully selected and validated for reproducibility. This dataset serves as a benchmark for evaluating automated bug reproduction systems in game environments.
         </p>
-        <!-- Optional: Add a disabled button here if needed, or just rely on the header button -->
-        <!-- <a href="#" class="button disabled"><i class="fas fa-database"></i> Download Dataset (coming soon)</a> -->
+
+        <div class="dataset-metrics">
+          <div class="metric-box">
+            <span class="metric-value">86</span>
+            <span class="metric-label">Reports</span>
+          </div>
+          <div class="metric-box">
+            <span class="metric-value">70</span>
+            <span class="metric-label">Game Versions</span>
+          </div>
+        </div>
+
+        <div class="dataset-details">
+          <h3>Dataset Creation</h3>
+          <ul class="feature-list">
+            <li>
+              <i class="fas fa-filter"></i> Retrieved crash reports from Mojira using REST API
+            </li>
+            <li>
+              <i class="fas fa-code"></i> Used regex to extract comments, attachments, and external links
+            </li>
+            <li>
+              <i class="fas fa-check-double"></i> Selected reports with "Confirmed" or "Community Consensus" status
+            </li>
+            <li>
+              <i class="fas fa-times-circle"></i> Excluded reports requiring:
+              <ul class="sub-list">
+                <li>Server/multiplayer interactions</li>
+                <li>External files (datapacks, worlds)</li>
+                <li>Machine-dependent setups</li>
+              </ul>
+            </li>
+            <li>
+              <i class="fas fa-random"></i> Randomly sampled final dataset from qualified reports
+            </li>
+          </ul>
+
+          <h3>Quality Assurance</h3>
+          <ul class="feature-list">
+            <li>
+              <i class="fas fa-check-circle"></i> Multi-stage filtration process
+            </li>
+            <li>
+              <i class="fas fa-check-circle"></i> Manual review for quality and relevance
+            </li>
+            <li>
+              <i class="fas fa-check-circle"></i> Verification of reproducibility
+            </li>
+          </ul>
+        </div>
+
+        <div class="wiki-section">
+          <h3><i class="fas fa-book"></i> Minecraft Wiki Knowledge Base</h3>
+          <p>
+            To enhance our framework with comprehensive game knowledge, we scraped the official Minecraft Wiki using MediaWiki API. The extracted content is processed and used for fuzzy matching during bug reproduction, reducing reliance on LLM pre-training data.
+          </p>
+        </div>
+
+        <div class="dataset-cta">
+          <p>
+            Access our curated dataset and contribute to advancing automated game bug reproduction research.
+          </p>
+          <a
+            href="https://huggingface.co/spaces/erayyap/bugcraft"
+            class="minecraft-button dataset-button"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <i class="fas fa-download"></i> Download Dataset
+          </a>
+        </div>
       </div>
     </div>
   </section>
