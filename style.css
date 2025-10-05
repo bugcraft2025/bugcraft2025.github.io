@@ -118,17 +118,34 @@ body {
   filter: drop-shadow(4px 4px 0px rgba(0, 0, 0, 0.5));
 }
 
-.minecraft-subtitle {
+.minecraft-paper-title {
   text-align: center;
   color: white;
+  margin-bottom: 1.5rem;
+  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.8);
+  font-family: 'Press Start 2P', cursive;
+}
+
+.minecraft-paper-title p {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 400;
+  line-height: 1.6;
+}
+
+.minecraft-subtitle {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.85);
   margin-bottom: 2rem;
   text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.8);
+  font-family: 'Press Start 2P', cursive;
 }
 
 .minecraft-subtitle p {
   margin: 0.3rem 0;
-  font-size: 1.1rem;
-  font-weight: 500;
+  font-size: 0.65rem;
+  font-weight: 400;
+  line-height: 1.6;
 }
 
 .minecraft-buttons {
@@ -139,19 +156,38 @@ body {
   max-width: 90%;
 }
 
+.minecraft-button-row {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
+
 .minecraft-button {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
   padding: 0.75rem 1.5rem;
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
   text-align: center;
   text-decoration: none;
-  font-size: 1.1rem;
-  font-weight: 500;
+  font-size: 0.85rem;
+  font-weight: 400;
   border: 2px solid rgba(0, 0, 0, 0.8);
   box-shadow: inset -2px -4px 0px rgba(0, 0, 0, 0.5), inset 2px 2px 0px rgba(255, 255, 255, 0.2);
   transition: all 0.1s ease;
   text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.8);
+  font-family: 'Press Start 2P', cursive;
+}
+
+.minecraft-button i {
+  font-size: 0.85rem;
+  line-height: 1;
+}
+
+.minecraft-button-half {
+  flex: 1;
 }
 
 .minecraft-button:hover {
@@ -167,16 +203,27 @@ body {
 
 .minecraft-footer {
   position: absolute;
-  bottom: 2rem;
-  left: 2rem;
+  bottom: 4rem;
   z-index: 2;
   color: white;
   text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.8);
+  font-family: 'Press Start 2P', cursive;
+}
+
+.minecraft-footer-left {
+  left: 2rem;
+  text-align: left;
+}
+
+.minecraft-footer-right {
+  right: 2rem;
+  text-align: right;
 }
 
 .minecraft-footer p {
   margin: 0.2rem 0;
-  font-size: 0.95rem;
+  font-size: 0.6rem;
+  line-height: 1.5;
 }
 
 /* Header Styles */
@@ -708,12 +755,16 @@ header {
 
 .leaderboard-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   font-size: 1rem;
 }
 
 .leaderboard-table thead tr {
   background-color: rgba(139, 69, 19, 0.3);
+}
+
+.leaderboard-table thead tr th {
   border-bottom: 3px solid #8B4513;
 }
 
@@ -729,7 +780,14 @@ header {
 
 .leaderboard-table td {
   padding: 1rem;
-  border-bottom: 2px solid rgba(139, 69, 19, 0.2);
+}
+
+.leaderboard-table tbody tr {
+  border-bottom: 2px solid #8B4513;
+}
+
+.leaderboard-table tbody tr:last-child {
+  border-bottom: none;
 }
 
 .leaderboard-table tbody tr:hover {
@@ -1296,7 +1354,7 @@ html {
 /* Minecraft Character Running Animation */
 .minecraft-character {
   position: fixed;
-  bottom: clamp(38px, 7.6vw, 48px); /* Responsive to grass height - adjusted to touch grass */
+  bottom: clamp(20px, 4vw, 30px); /* Responsive to grass height - lowered to touch grass */
   left: -100px; /* Start off-screen */
   width: clamp(50px, 10vw, 60px); /* Responsive width */
   height: auto;
@@ -1356,5 +1414,185 @@ html {
   }
   100% {
     left: calc(100% + 80px);
+  }
+}
+
+/* Settings Modal */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 2000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.7);
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-content {
+  background-color: rgba(255, 255, 255, 0.98);
+  margin: 5% auto;
+  padding: 0;
+  border: 4px solid #8B4513;
+  width: 90%;
+  max-width: 600px;
+  box-shadow:
+    0 8px 0 rgba(0, 0, 0, 0.4),
+    0 6px 30px rgba(0, 0, 0, 0.3),
+    inset 0 0 0 2px rgba(139, 69, 19, 0.3);
+  animation: slideDown 0.3s ease;
+  background-image:
+    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(139, 69, 19, 0.03) 2px, rgba(139, 69, 19, 0.03) 4px),
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(139, 69, 19, 0.03) 2px, rgba(139, 69, 19, 0.03) 4px);
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-header {
+  position: relative;
+  background-color: rgba(139, 69, 19, 0.15);
+  border-bottom: 3px solid #8B4513;
+  box-shadow:
+    inset -2px -2px 0px rgba(0, 0, 0, 0.3),
+    inset 2px 2px 0px rgba(255, 255, 255, 0.2);
+}
+
+.modal-content h2 {
+  color: #8B4513;
+  margin: 0;
+  padding: 1.5rem 2rem;
+  padding-right: 4rem;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content h2 i {
+  color: #D2691E;
+  filter: drop-shadow(1px 1px 0px rgba(0, 0, 0, 0.2));
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.5rem;
+  color: #654321;
+  font-size: 2.5rem;
+  font-weight: bold;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: none;
+  border: none;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-close:hover,
+.modal-close:focus {
+  color: #D2691E;
+  transform: scale(1.2);
+}
+
+.modal-body {
+  padding: 2rem;
+}
+
+.settings-message {
+  text-align: center;
+}
+
+.settings-message h3 {
+  color: #654321;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.settings-message p {
+  color: #555;
+  font-size: 1.1rem;
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+}
+
+.contact-info {
+  background-color: rgba(139, 69, 19, 0.1);
+  border: 3px solid #8B4513;
+  padding: 1.5rem;
+  margin: 2rem 0;
+  box-shadow:
+    inset -2px -2px 0px rgba(0, 0, 0, 0.2),
+    inset 2px 2px 0px rgba(255, 255, 255, 0.3);
+}
+
+.contact-info p {
+  margin: 0.5rem 0;
+  font-size: 1rem;
+}
+
+.contact-info a {
+  color: #8B4513;
+  text-decoration: none;
+  font-weight: 600;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.contact-info a:hover {
+  color: #D2691E;
+  border-bottom-color: #D2691E;
+}
+
+.contact-info i {
+  color: #D2691E;
+  margin-right: 0.5rem;
+}
+
+.settings-footer {
+  font-style: italic;
+  color: #654321;
+  font-size: 1rem;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .modal-content {
+    width: 95%;
+    margin: 10% auto;
+  }
+
+  .modal-content h2 {
+    font-size: 1.5rem;
+    padding: 1rem 1.5rem;
+  }
+
+  .modal-body {
+    padding: 1.5rem;
+  }
+
+  .settings-message h3 {
+    font-size: 1.3rem;
+  }
+
+  .settings-message p {
+    font-size: 1rem;
   }
 }

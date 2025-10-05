@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css" />
   <!-- Google Fonts -->
   <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Press+Start+2P&display=swap"
     rel="stylesheet"
   />
   <!-- Font Awesome for icons -->
@@ -27,20 +27,28 @@
     <div class="minecraft-background"></div>
     <div class="minecraft-menu">
       <img src="figures/title.png" alt="BugCraft - Agents in the Sandbox" class="minecraft-logo" />
+      <div class="minecraft-paper-title">
+        <p>End-to-End Crash Bug Reproduction for Minecraft</p>
+      </div>
       <div class="minecraft-subtitle">
-        <p>Eray Yapağcı, Yavuz Alp Sencer Öztürk, Eray Tüzün</p>
+        <p>Eray Yapagci, Yavuz Alp Sencer Ozturk, Eray Tuzun</p>
         <p>Computer Engineering Department, Bilkent University</p>
       </div>
       <div class="minecraft-buttons">
         <a href="#leaderboard" class="minecraft-button">Leaderboard</a>
         <a href="#abstract" class="minecraft-button">More Details</a>
         <a href="https://arxiv.org/abs/2503.20036" target="_blank" rel="noopener noreferrer" class="minecraft-button">View Paper</a>
-        <a href="https://github.com/erayyap/bugcraft" target="_blank" rel="noopener noreferrer" class="minecraft-button">GitHub</a>
-        <a href="#results" class="minecraft-button">View Results</a>
+        <div class="minecraft-button-row">
+          <a href="https://github.com/erayyap/bugcraft" target="_blank" rel="noopener noreferrer" class="minecraft-button minecraft-button-half">GitHub</a>
+          <button onclick="openSettingsModal()" class="minecraft-button minecraft-button-half">Options...</button>
+        </div>
       </div>
     </div>
-    <div class="minecraft-footer">
-      <p>Eray Yapağcı, Yavuz Alp Sencer Öztürk, Eray Tüzün</p>
+    <div class="minecraft-footer minecraft-footer-left">
+      <p>Agents In The Sandbox v1.0.0</p>
+    </div>
+    <div class="minecraft-footer minecraft-footer-right">
+      <p>Eray Yapagci, Yavuz Alp Sencer Ozturk, Eray Tuzun</p>
       <p>Computer Engineering Department, Bilkent University</p>
     </div>
   </section>
@@ -51,15 +59,6 @@
       <h2><i class="fas fa-trophy"></i> Leaderboard</h2>
       <div class="content-wrapper">
         <div class="leaderboard-container">
-          <div class="tab-group">
-            <button class="tab-button active" data-tab="end-to-end">
-              End-to-End
-            </button>
-            <button class="tab-button" data-tab="synthesizer">
-              Step Synthesizer
-            </button>
-            <button class="tab-button" data-tab="action">Action Model</button>
-          </div>
           <div class="table-scroll">
             <table class="leaderboard-table" id="end-to-end-table">
               <thead>
@@ -160,138 +159,6 @@
                 </tr>
               </tbody>
             </table>
-
-            <table
-              class="leaderboard-table"
-              id="synthesizer-table"
-              style="display: none"
-            >
-              <thead>
-                <tr>
-                  <th>Model</th>
-                  <th>% Accuracy</th>
-                  <th>Org</th>
-                  <th>Date</th>
-                  <th>Logs</th>
-                  <th>Trajs</th>
-                  <th>Site</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="model-cell">
-                    <span class="model-text">BugCraft Step Synthesizer (GPT-4.1)</span>
-                  </td>
-                  <td class="percent-cell">66.28</td>
-                  <td class="org-cell">
-                    <img
-                      src="figures/bilkent-logo.png"
-                      alt="Bilkent"
-                      class="org-icon"
-                    />
-                  </td>
-                  <td class="date-cell">
-                    <span class="date-badge">2025-02-07</span>
-                  </td>
-                  <td class="check-cell"><i class="fas fa-check"></i></td>
-                  <td class="check-cell"><i class="fas fa-check"></i></td>
-                  <td class="link-cell">
-                    <a href="#results" class="link-icon"
-                      ><i class="fas fa-link"></i
-                    ></a>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="model-cell">
-                    <span class="model-text">BugCraft Step Synthesizer (GPT-4o)</span>
-                  </td>
-                  <td class="percent-cell">66.28</td>
-                  <td class="org-cell">
-                    <img
-                      src="figures/bilkent-logo.png"
-                      alt="Bilkent"
-                      class="org-icon"
-                    />
-                  </td>
-                  <td class="date-cell">
-                    <span class="date-badge">2025-02-07</span>
-                  </td>
-                  <td class="check-cell"><i class="fas fa-check"></i></td>
-                  <td class="check-cell"><i class="fas fa-check"></i></td>
-                  <td class="link-cell">
-                    <a href="#results" class="link-icon"
-                      ><i class="fas fa-link"></i
-                    ></a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
-            <table
-              class="leaderboard-table"
-              id="action-table"
-              style="display: none"
-            >
-              <thead>
-                <tr>
-                  <th>Model</th>
-                  <th>% Success</th>
-                  <th>Org</th>
-                  <th>Date</th>
-                  <th>Logs</th>
-                  <th>Trajs</th>
-                  <th>Site</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td class="model-cell">
-                    <span class="model-text">BugCraft Action Model (GPT-4.1)</span>
-                  </td>
-                  <td class="percent-cell">38.60</td>
-                  <td class="org-cell">
-                    <img
-                      src="figures/bilkent-logo.png"
-                      alt="Bilkent"
-                      class="org-icon"
-                    />
-                  </td>
-                  <td class="date-cell">
-                    <span class="date-badge">2025-02-07</span>
-                  </td>
-                  <td class="check-cell"><i class="fas fa-check"></i></td>
-                  <td class="check-cell"><i class="fas fa-check"></i></td>
-                  <td class="link-cell">
-                    <a href="#results" class="link-icon"
-                      ><i class="fas fa-link"></i
-                    ></a>
-                  </td>
-                </tr>
-                <tr>
-                  <td class="model-cell">
-                    <span class="model-text">BugCraft Action Model (GPT-4o)</span>
-                  </td>
-                  <td class="percent-cell">38.60</td>
-                  <td class="org-cell">
-                    <img
-                      src="figures/bilkent-logo.png"
-                      alt="Bilkent"
-                      class="org-icon"
-                    />
-                  </td>
-                  <td class="date-cell">
-                    <span class="date-badge">2025-02-07</span>
-                  </td>
-                  <td class="check-cell"><i class="fas fa-check"></i></td>
-                  <td class="check-cell"><i class="fas fa-check"></i></td>
-                  <td class="link-cell">
-                    <a href="#results" class="link-icon"
-                      ><i class="fas fa-link"></i
-                    ></a>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
           </div>
         </div>
       </div>
@@ -317,18 +184,7 @@
         <p><strong>Objective:</strong> This paper introduces BugCraft, a novel end-to-end framework designed to automate the reproduction of crash bugs in Minecraft directly from user-submitted bug reports, addressing the critical gap in automated game bug reproduction.</p>
         <p><strong>Method:</strong> BugCraft employs a two-stage approach: first, a Step Synthesizer leverages LLMs and Minecraft Wiki knowledge to transform bug reports into high-quality, structured steps to reproduce (S2R). Second, an Action Model, powered by vision-based LLM agents (GPT-4o and GPT-4.1) and a custom macro API, executes these S2R steps within Minecraft to trigger the reported crash.</p>
         <p><strong>Results:</strong> Evaluated on BugCraft-Bench, our framework with GPT-4.1 successfully reproduced <strong>34.9%</strong> of crash bugs end-to-end, outperforming baseline models by 37%. The Step Synthesizer demonstrated a 66.28% accuracy in generating correct bug reproduction plans, highlighting its effectiveness in interpreting and structuring bug report information.</p>
-      </div>
-    </div>
-  </section>
 
-  <!-- Framework Overview Section -->
-  <section id="framework" class="content-section">
-    <div class="container">
-      <h2><i class="fas fa-cogs"></i> Framework Overview</h2>
-      <div class="content-wrapper">
-        <p>
-          BugCraft consists of two main components: the Step Synthesizer and the Action Model. The Step Synthesizer transforms unstructured bug reports into clear, executable steps, while the Action Model uses these steps to interact with the game environment and reproduce the crash.
-        </p>
         <div class="image-container">
           <img src="figures/fig2-gray-v3.png" alt="BugCraft Framework Architecture" class="section-image" />
           <p class="image-caption">Figure 2: The BugCraft framework, illustrating the two-stage process of S2R synthesis and action model execution.</p>
@@ -635,6 +491,29 @@
   <!-- Minecraft Character Running -->
   <div class="minecraft-character">
     <img src="figures/steve-run-1.png" alt="Minecraft Character" style="width: 100%; height: auto;" />
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <span class="modal-close" onclick="closeSettingsModal()">&times;</span>
+        <h2><i class="fas fa-cog"></i> Settings</h2>
+      </div>
+      <div class="modal-body">
+        <div class="settings-message">
+          <h3>Did you like our paper?</h3>
+          <p>We'd love to hear from you! Whether you want to add your model to the leaderboard, discuss the research, collaborate on new features, or just say hi, please reach out to us.</p>
+          <div class="contact-info">
+            <p><i class="fas fa-envelope"></i> <strong>Contact us at:</strong></p>
+            <p><a href="mailto:erayyapagci@bilkent.edu.tr">erayyapagci@bilkent.edu.tr</a></p>
+            <p><a href="mailto:alp.ozturk@ug.bilkent.edu.tr">alp.ozturk@ug.bilkent.edu.tr</a></p>
+            <p><a href="mailto:eray.tuzun@bilkent.edu.tr">eray.tuzun@bilkent.edu.tr</a></p>
+          </div>
+          <p class="settings-footer">We're always excited to collaborate and help you get the most out of BugCraft!</p>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- JavaScript -->

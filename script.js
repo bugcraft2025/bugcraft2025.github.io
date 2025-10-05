@@ -42,34 +42,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Leaderboard tab switching
-document.addEventListener('DOMContentLoaded', () => {
-    const tabButtons = document.querySelectorAll('.tab-button');
-    const tables = {
-        'end-to-end': document.getElementById('end-to-end-table'),
-        'synthesizer': document.getElementById('synthesizer-table'),
-        'action': document.getElementById('action-table')
-    };
+// Settings Modal
+function openSettingsModal() {
+    document.getElementById('settingsModal').style.display = 'block';
+}
 
-    tabButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            const targetTab = button.getAttribute('data-tab');
+function closeSettingsModal() {
+    document.getElementById('settingsModal').style.display = 'none';
+}
 
-            // Update active button
-            tabButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-
-            // Show/hide tables
-            Object.keys(tables).forEach(key => {
-                if (key === targetTab) {
-                    tables[key].style.display = 'table';
-                } else {
-                    tables[key].style.display = 'none';
-                }
-            });
-        });
-    });
-});
+// Close modal when clicking outside of it
+window.onclick = function(event) {
+    const modal = document.getElementById('settingsModal');
+    if (event.target === modal) {
+        closeSettingsModal();
+    }
+}
 
 // Copy citation to clipboard
 function copyCitation(event) {
