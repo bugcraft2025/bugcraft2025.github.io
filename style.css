@@ -826,6 +826,35 @@ header {
   }
 }
 
+/* Results Note */
+.results-note {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: rgba(222, 184, 135, 0.15);
+  border: 2px solid #A0522D;
+  border-left: 4px solid #8B4513;
+  text-align: center;
+}
+
+.results-note p {
+  margin: 0;
+  font-size: 1rem;
+  color: #654321;
+}
+
+.results-note a {
+  color: #8B4513;
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 2px solid #D2691E;
+  transition: all 0.2s ease;
+}
+
+.results-note a:hover {
+  color: #D2691E;
+  border-bottom-color: #8B4513;
+}
+
 /* Dataset Section */
 .dataset-metrics {
   display: grid;
@@ -1267,15 +1296,23 @@ html {
 /* Minecraft Character Running Animation */
 .minecraft-character {
   position: fixed;
-  bottom: clamp(32px, 6.4vw, 40px); /* Responsive to grass height */
+  bottom: clamp(38px, 7.6vw, 48px); /* Responsive to grass height - adjusted to touch grass */
   left: -100px; /* Start off-screen */
   width: clamp(50px, 10vw, 60px); /* Responsive width */
   height: auto;
   z-index: 1001;
   pointer-events: none;
-  animation: runCharacter 15s linear infinite;
+  animation: runCharacter 15s linear infinite, runFrames 1s steps(3) infinite;
   transform: translateZ(0); /* Force GPU acceleration for mobile */
   -webkit-transform: translateZ(0);
+  background-image: url('figures/steve-run-1.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.minecraft-character img {
+  opacity: 0;
 }
 
 /* Minecraft Bug Running Animation */
@@ -1298,6 +1335,18 @@ html {
   }
   100% {
     left: 100%;
+  }
+}
+
+@keyframes runFrames {
+  0% {
+    background-image: url('figures/steve-run-1.png');
+  }
+  33.33% {
+    background-image: url('figures/steve-run-2.png');
+  }
+  66.66% {
+    background-image: url('figures/steve-run-3.png');
   }
 }
 
