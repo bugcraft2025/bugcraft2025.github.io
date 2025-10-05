@@ -382,13 +382,33 @@ header {
     margin-bottom: 0.3rem;
   }
 
+  .minecraft-paper-title p {
+    font-size: 0.75rem;
+  }
+
   .minecraft-subtitle {
     margin-bottom: 1.5rem;
   }
 
   .minecraft-subtitle p {
-    font-size: 0.9rem;
+    font-size: 0.45rem;
     margin: 0.2rem 0;
+  }
+
+  .minecraft-footer {
+    bottom: 3rem;
+  }
+
+  .minecraft-footer-left {
+    left: 0.5rem;
+  }
+
+  .minecraft-footer-right {
+    display: none; /* Hide authors on mobile */
+  }
+
+  .minecraft-footer p {
+    font-size: 0.5rem;
   }
 
   .minecraft-buttons {
@@ -515,7 +535,7 @@ header {
   }
 
   .minecraft-subtitle p {
-    font-size: 0.8rem;
+    font-size: 0.55rem;
   }
 
   .minecraft-buttons {
@@ -524,7 +544,7 @@ header {
   }
 
   .minecraft-button {
-    font-size: 0.9rem;
+    font-size: 0.7rem;
     padding: 0.55rem 0.8rem;
   }
 
@@ -1564,6 +1584,45 @@ html {
 .contact-info i {
   color: #D2691E;
   margin-right: 0.5rem;
+}
+
+.modal-links {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.modal-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  background-color: rgba(139, 69, 19, 0.15);
+  border: 2px solid #8B4513;
+  color: #654321;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  box-shadow:
+    inset -1px -1px 0px rgba(0, 0, 0, 0.2),
+    inset 1px 1px 0px rgba(255, 255, 255, 0.3);
+}
+
+.modal-links a:hover {
+  background-color: rgba(139, 69, 19, 0.25);
+  color: #8B4513;
+  transform: translateY(-2px);
+  box-shadow:
+    inset -1px -1px 0px rgba(0, 0, 0, 0.2),
+    inset 1px 1px 0px rgba(255, 255, 255, 0.3),
+    0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.modal-links a i {
+  color: #D2691E;
 }
 
 .settings-footer {
