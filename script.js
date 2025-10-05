@@ -43,26 +43,47 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Copy citation to clipboard
-function copyCitation() {
+function copyCitation(event) {
     const citationText = document.getElementById('citation-text').innerText;
+    const button = event.target.closest('button');
+    const originalHTML = button.innerHTML;
 
-    // Fallback for older browsers
-    if (!navigator.clipboard) {
-        // Create temporary textarea
-        const textArea = document.createElement('textarea');
-        textArea.value = citationText;
-        textArea.style.position = 'fixed';
-        textArea.style.left = '-999999px';
-        document.body.appendChild(textArea);
-        textArea.select();
+    // Try modern clipboard API first, with fallback
+    const copyToClipboard = (text) => {
+        // Modern clipboard API
+        if (navigator.clipboard && window.isSecureContext) {
+            return navigator.clipboard.writeText(text);
+        } else {
+            // Fallback method
+            return new Promise((resolve, reject) => {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                textArea.style.position = 'fixed';
+                textArea.style.left = '-999999px';
+                textArea.style.top = '-999999px';
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
 
-        try {
-            document.execCommand('copy');
-            document.body.removeChild(textArea);
+                try {
+                    const successful = document.execCommand('copy');
+                    document.body.removeChild(textArea);
+                    if (successful) {
+                        resolve();
+                    } else {
+                        reject(new Error('Copy command failed'));
+                    }
+                } catch (err) {
+                    document.body.removeChild(textArea);
+                    reject(err);
+                }
+            });
+        }
+    };
 
+    copyToClipboard(citationText)
+        .then(() => {
             // Show success feedback
-            const button = event.target.closest('button');
-            const originalHTML = button.innerHTML;
             button.innerHTML = '<i class="fas fa-check"></i> Copied!';
             button.style.backgroundColor = 'rgba(100, 255, 100, 0.3)';
 
@@ -70,27 +91,15 @@ function copyCitation() {
                 button.innerHTML = originalHTML;
                 button.style.backgroundColor = '';
             }, 2000);
-        } catch (err) {
-            document.body.removeChild(textArea);
+        })
+        .catch(err => {
             console.error('Failed to copy citation:', err);
-            alert('Failed to copy citation. Please copy manually.');
-        }
-        return;
-    }
+            button.innerHTML = '<i class="fas fa-times"></i> Failed';
+            button.style.backgroundColor = 'rgba(255, 100, 100, 0.3)';
 
-    navigator.clipboard.writeText(citationText).then(() => {
-        // Show success feedback
-        const button = event.target.closest('button');
-        const originalHTML = button.innerHTML;
-        button.innerHTML = '<i class="fas fa-check"></i> Copied!';
-        button.style.backgroundColor = 'rgba(100, 255, 100, 0.3)';
-
-        setTimeout(() => {
-            button.innerHTML = originalHTML;
-            button.style.backgroundColor = '';
-        }, 2000);
-    }).catch(err => {
-        console.error('Failed to copy citation:', err);
-        alert('Failed to copy citation. Please copy manually.');
-    });
+            setTimeout(() => {
+                button.innerHTML = originalHTML;
+                button.style.backgroundColor = '';
+            }, 2000);
+        });
 } 
