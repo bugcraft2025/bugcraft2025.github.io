@@ -165,16 +165,6 @@
     </div>
   </section>
 
-  <!-- Framework Overview Section -->
-  <section id="framework-overview" class="content-section">
-    <div class="container">
-      <div class="hero-container">
-        <img src="figures/bugcraft-intro-v4.png" alt="BugCraft Overview" class="hero-image" />
-        <p class="image-caption">Figure 1: Overview of the BugCraft framework</p>
-      </div>
-    </div>
-  </section>
-
   <!-- Abstract Section -->
   <section id="abstract" class="content-section">
     <div class="container">
@@ -184,6 +174,11 @@
         <p><strong>Objective:</strong> This paper introduces BugCraft, a novel end-to-end framework designed to automate the reproduction of crash bugs in Minecraft directly from user-submitted bug reports, addressing the critical gap in automated game bug reproduction.</p>
         <p><strong>Method:</strong> BugCraft employs a two-stage approach: first, a Step Synthesizer leverages LLMs and Minecraft Wiki knowledge to transform bug reports into high-quality, structured steps to reproduce (S2R). Second, an Action Model, powered by vision-based LLM agents (GPT-4o and GPT-4.1) and a custom macro API, executes these S2R steps within Minecraft to trigger the reported crash.</p>
         <p><strong>Results:</strong> Evaluated on BugCraft-Bench, our framework with GPT-4.1 successfully reproduced <strong>34.9%</strong> of crash bugs end-to-end, outperforming baseline models by 37%. The Step Synthesizer demonstrated a 66.28% accuracy in generating correct bug reproduction plans, highlighting its effectiveness in interpreting and structuring bug report information.</p>
+
+        <div class="image-container">
+          <img src="figures/bugcraft-intro-v4.png" alt="BugCraft Overview" class="section-image" />
+          <p class="image-caption">Figure 1: Overview of the BugCraft framework</p>
+        </div>
 
         <div class="image-container">
           <img src="figures/fig2-gray-v3.png" alt="BugCraft Framework Architecture" class="section-image" />
