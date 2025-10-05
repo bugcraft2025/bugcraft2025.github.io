@@ -12,17 +12,171 @@
   box-sizing: border-box;
 }
 
+html {
+  overflow-x: hidden;
+  min-height: 100vh;
+  position: relative;
+}
+
 body {
   font-family: 'Inter', sans-serif;
   line-height: 1.6;
   color: var(--text-color);
   background-color: var(--background-color);
+  padding-bottom: clamp(40px, 8vw, 50px); /* Responsive space for sticky grass footer */
+  overflow-x: hidden; /* Prevent horizontal scroll */
+  min-height: 100vh;
+  position: relative;
+}
+
+/* Announcement Bar */
+.announcement-bar {
+  background-image: url('figures/minecraft-dirt-texture.jpg');
+  background-size: 200px 200px;
+  background-repeat: repeat;
+  color: white;
+  padding: 0.7rem 2rem;
+  text-align: center;
+  width: 100%;
+  box-shadow: inset 0 -4px 0 rgba(0, 0, 0, 0.3), 0 4px 0 rgba(0, 0, 0, 0.2);
+  z-index: 1002;
+  position: relative;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.5);
+  image-rendering: pixelated;
+}
+
+.announcement-bar p {
+  margin: 0;
+  font-size: clamp(0.85rem, 2vw, 1.1rem);
+  line-height: 1.5;
+  font-weight: 400;
+  padding: 0 1rem;
+  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.8);
+}
+
+.announcement-bar strong {
+  font-weight: 700;
+  color: #FFD700;
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 2rem;
+}
+
+/* Minecraft Hero Section */
+#minecraft-hero {
+  position: relative;
+  width: 100%;
+  height: calc(100vh - clamp(40px, 8vw, 50px)); /* Subtract responsive grass footer */
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.minecraft-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('figures/minecraft-background.png');
+  background-size: cover;
+  background-position: center;
+  filter: blur(5px);
+  z-index: 1;
+}
+
+.minecraft-background::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.minecraft-menu {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.minecraft-logo {
+  max-width: 1200px;
+  width: 95%;
+  height: auto;
+  margin-bottom: 0.5rem;
+  filter: drop-shadow(4px 4px 0px rgba(0, 0, 0, 0.5));
+}
+
+.minecraft-subtitle {
+  text-align: center;
+  color: white;
+  margin-bottom: 2rem;
+  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.8);
+}
+
+.minecraft-subtitle p {
+  margin: 0.3rem 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.minecraft-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 400px;
+  max-width: 90%;
+}
+
+.minecraft-button {
+  display: block;
+  padding: 0.75rem 1.5rem;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  font-size: 1.1rem;
+  font-weight: 500;
+  border: 2px solid rgba(0, 0, 0, 0.8);
+  box-shadow: inset -2px -4px 0px rgba(0, 0, 0, 0.5), inset 2px 2px 0px rgba(255, 255, 255, 0.2);
+  transition: all 0.1s ease;
+  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.8);
+}
+
+.minecraft-button:hover {
+  background-color: rgba(100, 100, 255, 0.6);
+  box-shadow: inset -2px -4px 0px rgba(0, 0, 100, 0.5), inset 2px 2px 0px rgba(150, 150, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.minecraft-button:active {
+  transform: translateY(0);
+  box-shadow: inset 2px 2px 0px rgba(0, 0, 0, 0.5);
+}
+
+.minecraft-footer {
+  position: absolute;
+  bottom: 2rem;
+  left: 2rem;
+  z-index: 2;
+  color: white;
+  text-shadow: 2px 2px 0px rgba(0, 0, 0, 0.8);
+}
+
+.minecraft-footer p {
+  margin: 0.2rem 0;
+  font-size: 0.95rem;
 }
 
 /* Header Styles */
@@ -49,6 +203,14 @@ header {
   text-align: center;
   max-width: 800px;
   margin: 0 auto;
+}
+
+.title-section .title-image {
+  max-width: 800px;
+  width: 100%;
+  height: auto;
+  margin: 0 auto 1.5rem;
+  display: block;
 }
 
 .title-section h1 {
@@ -117,10 +279,141 @@ header {
   font-size: 1.1rem;
 }
 
-/* Responsive Header */
+/* Tablet Styles */
+@media (max-width: 1024px) {
+  .container {
+    padding: 0 1.5rem;
+  }
+
+  .minecraft-logo {
+    max-width: 85%;
+  }
+
+  .minecraft-buttons {
+    width: 450px;
+  }
+
+  .content-section {
+    padding: 3rem 0;
+  }
+
+  .content-section h2 {
+    font-size: 2rem;
+  }
+
+  .content-section p {
+    font-size: 1.05rem;
+  }
+}
+
+/* Mobile Styles */
 @media (max-width: 768px) {
+  body {
+    min-height: 100svh; /* Use small viewport height for mobile */
+  }
+
+  #minecraft-hero {
+    min-height: 450px;
+    height: calc(100svh - clamp(40px, 8vw, 50px)); /* Use small viewport height */
+  }
+
+  .grass-footer {
+    position: fixed !important;
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  .minecraft-character,
+  .minecraft-bug {
+    position: fixed !important;
+    display: block !important;
+    visibility: visible !important;
+  }
+
+  .minecraft-logo {
+    max-width: 90%;
+    margin-bottom: 0.3rem;
+  }
+
+  .minecraft-subtitle {
+    margin-bottom: 1.5rem;
+  }
+
+  .minecraft-subtitle p {
+    font-size: 0.9rem;
+    margin: 0.2rem 0;
+  }
+
+  .minecraft-buttons {
+    width: 95%;
+    max-width: 350px;
+  }
+
+  .minecraft-button {
+    font-size: 0.95rem;
+    padding: 0.6rem 1rem;
+  }
+
+  .minecraft-footer {
+    bottom: 1rem;
+    left: 1rem;
+  }
+
+  .minecraft-footer p {
+    font-size: 0.75rem;
+    line-height: 1.3;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
+  .content-section {
+    padding: 2.5rem 0;
+    margin: 1rem 0;
+  }
+
+  .content-section h2 {
+    font-size: 1.75rem;
+    gap: 0.7rem;
+  }
+
+  .content-section p {
+    font-size: 1rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .hero-container {
+    padding: 0 0.5rem;
+  }
+
+  .image-caption {
+    font-size: 0.85rem;
+  }
+
+  .results-subsection h3 {
+    font-size: 1.5rem;
+  }
+
+  .results-subsection h4 {
+    font-size: 1.2rem;
+  }
+
+  .results-data {
+    padding: 0.8rem 1rem;
+  }
+
+  .results-list li {
+    padding: 0.8rem 1rem;
+    font-size: 0.95rem;
+  }
+
   header {
     padding: 3rem 0;
+  }
+
+  .title-section .title-image {
+    max-width: 90%;
   }
 
   .title-section h1 {
@@ -152,6 +445,64 @@ header {
   .header-button {
     width: 100%;
     justify-content: center;
+  }
+}
+
+/* Small Mobile Styles */
+@media (max-width: 480px) {
+  .announcement-bar {
+    padding: 0.5rem 0.3rem;
+  }
+
+  .announcement-bar p {
+    font-size: 0.75rem;
+    padding: 0;
+  }
+
+  #minecraft-hero {
+    min-height: 500px;
+  }
+
+  .minecraft-logo {
+    max-width: 95%;
+  }
+
+  .minecraft-subtitle p {
+    font-size: 0.8rem;
+  }
+
+  .minecraft-buttons {
+    width: 100%;
+    padding: 0 1rem;
+  }
+
+  .minecraft-button {
+    font-size: 0.9rem;
+    padding: 0.55rem 0.8rem;
+  }
+
+  .minecraft-footer p {
+    font-size: 0.7rem;
+  }
+
+  .content-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .content-section p {
+    font-size: 0.95rem;
+  }
+
+  .results-subsection h3 {
+    font-size: 1.3rem;
+  }
+
+  .results-subsection h4 {
+    font-size: 1.1rem;
+  }
+
+  .results-subsection h5 {
+    font-size: 1rem;
   }
 }
 
@@ -464,4 +815,67 @@ html {
   font-style: italic;
   text-align: center;
   font-size: 0.95rem;
+}
+
+/* Minecraft Grass Footer */
+.grass-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: clamp(40px, 8vw, 50px); /* Responsive height */
+  background-image: url('figures/minecraft-grass.png');
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+  background-position: bottom;
+  z-index: 1000;
+  pointer-events: none;
+  transform: translateZ(0); /* Force GPU acceleration for mobile */
+  -webkit-transform: translateZ(0);
+}
+
+/* Minecraft Character Running Animation */
+.minecraft-character {
+  position: fixed;
+  bottom: clamp(32px, 6.4vw, 40px); /* Responsive to grass height */
+  left: -100px; /* Start off-screen */
+  width: clamp(50px, 10vw, 60px); /* Responsive width */
+  height: auto;
+  z-index: 1001;
+  pointer-events: none;
+  animation: runCharacter 15s linear infinite;
+  transform: translateZ(0); /* Force GPU acceleration for mobile */
+  -webkit-transform: translateZ(0);
+}
+
+/* Minecraft Bug Running Animation */
+.minecraft-bug {
+  position: fixed;
+  bottom: clamp(36px, 7.2vw, 45px); /* Responsive to grass height */
+  left: -20px; /* Start ahead of character */
+  width: clamp(25px, 5vw, 30px); /* Responsive width */
+  height: auto;
+  z-index: 1001;
+  pointer-events: none;
+  animation: runBug 15s linear infinite;
+  transform: translateZ(0); /* Force GPU acceleration for mobile */
+  -webkit-transform: translateZ(0);
+}
+
+@keyframes runCharacter {
+  0% {
+    left: -100px;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+@keyframes runBug {
+  0% {
+    left: -20px; /* Bug starts 80px ahead of character */
+  }
+  100% {
+    left: calc(100% + 80px);
+  }
 }

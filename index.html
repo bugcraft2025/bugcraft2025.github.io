@@ -17,31 +17,35 @@
   />
 </head>
 <body>
-  <header>
-    <div class="container header-container">
-      <div class="header-content">
-        <div class="title-section">
-          <h1>BugCraft</h1>
-          <h2>End-to-End Crash Bug Reproduction Using LLM Agents in Minecraft</h2>
-          <h3>Arxiv preprint</h3>
-          <div class="authors">
-            <p>Eray Yapağcı, Yavuz Alp Sencer Öztürk, Eray Tüzün</p>
-            <p>Computer Engineering Department, Bilkent University</p>
-            <p>Ankara, Turkey</p>
-          </div>
-        </div>
-        <div class="header-buttons">
-          <a href="https://arxiv.org/abs/2503.20036" target="_blank" rel="noopener noreferrer" class="header-button"><i class="fas fa-file-alt"></i> Paper</a>
-          <a href="https://github.com/erayyap/bugcraft" target="_blank" rel="noopener noreferrer" class="header-button"><i class="fab fa-github"></i> Code</a>
-          <a href="#" class="header-button"><i class="fas fa-database"></i> Dataset (coming soon)</a>
-          <a href="#results" class="header-button"><i class="fas fa-chart-line"></i> Results</a>
-        </div>
+  <!-- Announcement Bar -->
+  <div class="announcement-bar">
+    <p><strong>Accepted to ASE 2025</strong> - 40th IEEE/ACM International Conference on Automated Software Engineering</p>
+  </div>
+
+  <!-- Minecraft-style Hero Section -->
+  <section id="minecraft-hero">
+    <div class="minecraft-background"></div>
+    <div class="minecraft-menu">
+      <img src="figures/paper-title-minecraft-font.png" alt="BugCraft" class="minecraft-logo" />
+      <div class="minecraft-subtitle">
+        <p>Eray Yapağcı, Yavuz Alp Sencer Öztürk, Eray Tüzün</p>
+        <p>Computer Engineering Department, Bilkent University</p>
+      </div>
+      <div class="minecraft-buttons">
+        <a href="#abstract" class="minecraft-button">More Details</a>
+        <a href="https://arxiv.org/abs/2503.20036" target="_blank" rel="noopener noreferrer" class="minecraft-button">View Paper</a>
+        <a href="https://github.com/erayyap/bugcraft" target="_blank" rel="noopener noreferrer" class="minecraft-button">GitHub</a>
+        <a href="#results" class="minecraft-button">View Results</a>
       </div>
     </div>
-  </header>
+    <div class="minecraft-footer">
+      <p>Eray Yapağcı, Yavuz Alp Sencer Öztürk, Eray Tüzün</p>
+      <p>Computer Engineering Department, Bilkent University</p>
+    </div>
+  </section>
 
-  <!-- Hero Section with Banner -->
-  <section id="hero">
+  <!-- Framework Overview Section -->
+  <section id="framework-overview" class="content-section">
     <div class="container">
       <div class="hero-container">
         <img src="figures/bugcraft-intro-v4.png" alt="BugCraft Overview" class="hero-image" />
@@ -251,6 +255,15 @@
       </div>
     </div>
   </footer>
+
+  <!-- Minecraft Grass Footer -->
+  <div class="grass-footer"></div>
+
+  <!-- Minecraft Bug Running -->
+  <img src="figures/minecraft-bug.png" alt="Minecraft Bug" class="minecraft-bug" />
+
+  <!-- Minecraft Character Running -->
+  <img src="figures/minecraft-character.png" alt="Minecraft Character" class="minecraft-character" />
 
   <!-- JavaScript -->
   <script src="script.js"></script>
