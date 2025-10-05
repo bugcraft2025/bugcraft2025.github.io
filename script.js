@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
         anchor.addEventListener('click', function(e) {
             e.preventDefault();
             const target = document.querySelector(this.getAttribute('href'));
-            
+
             if (target) {
                 const headerOffset = 80; // Account for fixed header
                 const elementPosition = target.getBoundingClientRect().top;
@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     window.addEventListener('scroll', () => {
         let current = '';
-        
+
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
             const sectionHeight = section.clientHeight;
@@ -40,4 +40,24 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-}); 
+});
+
+// Copy citation to clipboard
+function copyCitation() {
+    const citationText = document.getElementById('citation-text').textContent;
+    navigator.clipboard.writeText(citationText).then(() => {
+        // Show success feedback
+        const button = event.target.closest('button');
+        const originalHTML = button.innerHTML;
+        button.innerHTML = '<i class="fas fa-check"></i> Copied!';
+        button.style.backgroundColor = 'rgba(100, 255, 100, 0.3)';
+
+        setTimeout(() => {
+            button.innerHTML = originalHTML;
+            button.style.backgroundColor = '';
+        }, 2000);
+    }).catch(err => {
+        console.error('Failed to copy citation:', err);
+        alert('Failed to copy citation. Please copy manually.');
+    });
+} 
