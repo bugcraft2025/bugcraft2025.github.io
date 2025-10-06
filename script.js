@@ -348,3 +348,38 @@ function initScrollTextGlitch() {
         }
     });
 }
+
+// Quiet console easter egg for curious explorers.
+(() => {
+    const secretBreath = Object.freeze({
+        inhale: () => 'deeply',
+        exhale: () => 'slowly',
+        mantra: 'Sometimes all you need is to pause before the next fix.'
+    });
+
+    const calmLog = (air) => {
+        if (air === secretBreath) {
+            console.log('%cInhale... Exhale... You got this.', 'color: #5e412f; font-style: italic;');
+            return { clarity: 'restored', focus: 'steady' };
+        }
+
+        console.warn('That does not feel like the right breath.');
+        return undefined;
+    };
+
+    Object.defineProperty(window, 'breath', {
+        value: secretBreath,
+        writable: false,
+        configurable: false,
+        enumerable: false
+    });
+
+    Object.defineProperty(window, 'take', {
+        value: function take(air) {
+            return calmLog(air === undefined ? secretBreath : air);
+        },
+        writable: false,
+        configurable: false,
+        enumerable: false
+    });
+})();

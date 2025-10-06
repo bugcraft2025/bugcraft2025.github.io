@@ -2138,6 +2138,24 @@ html {
   margin-top: 1.5rem;
 }
 
+.settings-easter-egg {
+  font-size: 0.8rem;
+  color: rgba(101, 67, 33, 0.15);
+  margin-top: 0.75rem;
+  user-select: none;
+  pointer-events: none;
+}
+
+.settings-function,
+.settings-variable {
+  font-style: normal;
+  font-family: "Courier New", Courier, monospace;
+}
+
+.settings-variable {
+  opacity: 0.7;
+}
+
 @media (max-width: 768px) {
   .modal-content {
     width: 95%;
