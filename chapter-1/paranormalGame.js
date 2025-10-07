@@ -20,9 +20,11 @@ export let gameState = {
         { time: 30000, spawns: ['rift'] },
         { time: 40000, spawns: ['eye'] },
         { time: 50000, spawns: ['rift'] },
-        { time: 60000, spawns: ['eye'] },
+        { time: 60000, spawns: ['eye', 'rift'] },
         { time: 75000, spawns: ['eye', 'rift'] },
-        { time: 100000, spawns: ['eye', 'rift', 'rift'] }
+        { time: 90000, spawns: ['rift', 'rift'] },
+        { time: 100000, spawns: ['eye', 'eye'] },
+        { time: 110000, spawns: ['rift', 'rift'] },
     ],
     spawnedScheduleIndexes: [] // Track which scheduled spawns have already occurred
 };

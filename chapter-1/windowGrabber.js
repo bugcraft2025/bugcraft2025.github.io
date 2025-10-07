@@ -14,10 +14,11 @@ export function grabAndDestroyWindow(targetWindow, delay = 1000) {
         }
 
         setTimeout(() => {
-            // Determine which side the window is on (left or right half of screen)
+            // Determine which side the window is on and grab from opposite side (longest travel)
+            // If window is on left side, grab from right; if on right side, grab from left
             const screenMiddle = screen.width / 2;
             const windowX = targetWindow.screenX;
-            const fromLeft = windowX < screenMiddle;
+            const fromLeft = windowX >= screenMiddle;
 
             injectGrabSequence(targetWindow, fromLeft, resolve);
         }, delay);

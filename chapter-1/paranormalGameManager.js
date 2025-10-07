@@ -30,10 +30,12 @@ import {
     getCurtainWindow,
     isCurtainClosed,
     isFlashlightOn,
+    getCurtainBoundsAndState,
     openGameWindows,
     initializeWindowContent,
     updateHPDisplay,
     updateScannerDisplay,
+    updateTimerDisplay,
     updateGameMessage,
     updateCurtainState,
     setCurtainClosed,
@@ -45,6 +47,7 @@ import {
     addRedGlowToWindow,
     removeRedGlowFromWindow,
     closeGameWindows,
+    triggerCurtainSuccessGlow,
     triggerRainbowFlash
 } from './paranormalGameUI.js';
 
@@ -90,6 +93,40 @@ export function startParanormalGame(onComplete) {
 }
 
 /**
+ * Updates enemy stages with curtain acceleration for eyes
+ */
+function updateEnemyStagesWithCurtainAcceleration() {
+    const now = Date.now();
+    const curtainInfo = getCurtainBoundsAndState();
+
+    gameState.enemies.forEach(enemy => {
+        const config = enemyConfig[enemy.type];
+        if (!config) return;
+
+        let progressInterval = config.progressInterval;
+
+        // Check if this is an eye under a closed curtain
+        if (enemy.type === 'eye' && curtainInfo && curtainInfo.isClosed) {
+            const eyeCovered = enemy.x >= curtainInfo.bounds.left &&
+                             enemy.x <= curtainInfo.bounds.right &&
+                             enemy.y >= curtainInfo.bounds.top &&
+                             enemy.y <= curtainInfo.bounds.bottom;
+
+            if (eyeCovered) {
+                // 4x faster progression under closed curtain
+                progressInterval = config.progressInterval / 4;
+            }
+        }
+
+        // Check if enough time has passed to progress to next stage
+        if (now - enemy.lastUpdate >= progressInterval && enemy.stage < config.maxStage) {
+            enemy.stage++;
+            enemy.lastUpdate = now;
+        }
+    });
+}
+
+/**
  * Main game loop
  */
 function startGameLoop() {
@@ -102,8 +139,8 @@ function startGameLoop() {
         // Check and spawn enemies according to schedule
         checkScheduledSpawns();
 
-        // Update enemy stages
-        updateEnemyStages();
+        // Update enemy stages (with curtain acceleration)
+        updateEnemyStagesWithCurtainAcceleration();
 
         // Update scanner status
         updateScannerStatus();
@@ -127,9 +164,17 @@ function startGameLoop() {
         // Update respawn cooldowns
         updateRespawnCooldownDisplays();
 
-        // Check win condition (survive for 2 minutes) - only after tutorial
+        // Update timer display
         if (!gameState.tutorialMode && gameState.postTutorialStartTime > 0) {
-            if (Date.now() - gameState.postTutorialStartTime >= 120000) {
+            const timeRemaining = 150000 - (Date.now() - gameState.postTutorialStartTime);
+            updateTimerDisplay(Math.max(0, timeRemaining));
+        } else {
+            updateTimerDisplay(-1); // Show --:--
+        }
+
+        // Check win condition (survive for 2.5 minutes) - only after tutorial
+        if (!gameState.tutorialMode && gameState.postTutorialStartTime > 0) {
+            if (Date.now() - gameState.postTutorialStartTime >= 150000) {
                 gameWon();
             }
         }
@@ -204,6 +249,7 @@ function checkEyeDefense() {
 
         if (eyeCovered && isCurtainClosed()) {
             // Successfully defended!
+            triggerCurtainSuccessGlow();
             updateGameMessage('Eye neutralized! Well done.');
 
             // Remove the eye
@@ -212,9 +258,9 @@ function checkEyeDefense() {
             // Tutorial mode: First eye defeated - start normal gameplay with schedule
             if (gameState.tutorialMode && gameState.tutorialEyeSpawned) {
                 gameState.tutorialMode = false;
-                gameState.postTutorialStartTime = Date.now(); // Start the 2-minute timer
+                gameState.postTutorialStartTime = Date.now(); // Start the 2.5-minute timer
 
-                updateGameMessage('<span style="color: #00ff00; font-weight: bold;">Tutorial complete! Survive for 2 minutes!</span>');
+                updateGameMessage('<span style="color: #00ff00; font-weight: bold;">Tutorial complete! Survive for 2.5 minutes!</span>');
             }
         } else if (!eye.attackedPlayer) {
             // Eye attack!
@@ -279,6 +325,7 @@ function checkRiftDefense() {
                     setTimeout(() => updateGameMessage('<span style="color: #ffff00;">Step 1: Use the Finder to locate and identify the Eye.</span>'), 1000);
                     setTimeout(() => updateGameMessage('<span style="color: #ffff00;">Step 2: When the Eye fully opens, position the Curtain (🪟) over it.</span>'), 2000);
                     setTimeout(() => updateGameMessage('<span style="color: #ffff00;">Step 3: Hold the CLOSE button to cover the Eye before it attacks!</span>'), 3000);
+                    setTimeout(() => updateGameMessage('<span style="color: #00ffff;">TIP: Eyes progress 4x faster when under a closed curtain!</span>'), 4000);
                 }, 3000);
             }
         } else if (rift.stage === 5 && !rift.attackedPlayer) {

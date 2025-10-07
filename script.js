@@ -382,7 +382,10 @@ function initScrollTextGlitch() {
 
     Object.defineProperty(window, 'take', {
         value: function take(air) {
-            return calmLog(air === undefined ? secretBreath : air);
+            if (air === undefined) {
+                return undefined;
+            }
+            return calmLog(air);
         },
         writable: false,
         configurable: false,

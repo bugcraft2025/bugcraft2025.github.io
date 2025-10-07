@@ -28,6 +28,24 @@ export function isCurtainClosed() { return curtainClosed; }
 export function isFlashlightOn() { return flashlightOn; }
 
 /**
+ * Gets curtain bounds and state for checking if enemies are covered
+ */
+export function getCurtainBoundsAndState() {
+    const curtainWin = getCurtainWindow();
+    if (!curtainWin || curtainWin.closed) return null;
+
+    return {
+        bounds: {
+            left: curtainWin.screenX,
+            top: curtainWin.screenY,
+            right: curtainWin.screenX + curtainWin.outerWidth,
+            bottom: curtainWin.screenY + curtainWin.outerHeight
+        },
+        isClosed: curtainClosed
+    };
+}
+
+/**
  * Opens the 3 component windows
  * Uses main window (window.opener) to spawn all windows to avoid popup blocking
  */
@@ -139,6 +157,9 @@ function transformDialogueToStatusWindow() {
     if (dialogueText) {
         dialogueText.innerHTML = `
             <h2 style="margin: 0 0 15px 0; color: #ff0000; font-size: 20px; text-align: center;">PARANORMAL CONTAINMENT</h2>
+            <div id="timer-display" style="font-size: 32px; font-weight: bold; color: #ffff00; margin: 10px 0; text-align: center; text-shadow: 0 0 10px rgba(255, 255, 0, 0.8);">
+                --:--
+            </div>
             <div id="hp-display" style="font-size: 24px; font-weight: bold; color: #00ff00; margin: 15px 0; text-align: center;">
                 HP: <span id="hp-value">3</span> / 3
             </div>
@@ -405,7 +426,35 @@ function initializeFlashlightWindow() {
         </head>
         <body>
             <div id="enemy-container"></div>
-            <button id="light-button" onmousedown="if(window.opener) window.opener.paranormalFlashlightDown()" onmouseup="if(window.opener) window.opener.paranormalFlashlightUp()">LIGHT</button>
+            <button id="light-button">LIGHT</button>
+            <script>
+                (function() {
+                    const btn = document.getElementById('light-button');
+                    let isPressed = false;
+
+                    function handleDown() {
+                        if (!isPressed && window.opener) {
+                            isPressed = true;
+                            window.opener.paranormalFlashlightDown();
+                        }
+                    }
+
+                    function handleUp() {
+                        if (isPressed && window.opener) {
+                            isPressed = false;
+                            window.opener.paranormalFlashlightUp();
+                        }
+                    }
+
+                    btn.addEventListener('mousedown', handleDown);
+                    btn.addEventListener('mouseup', handleUp);
+                    btn.addEventListener('mouseleave', handleUp);
+                    btn.addEventListener('blur', handleUp);
+
+                    // Handle global mouseup to catch releases outside the button
+                    document.addEventListener('mouseup', handleUp);
+                })();
+            </script>
         </body>
         </html>
     `);
@@ -446,6 +495,17 @@ function initializeCurtainWindow() {
                     height: 100%;
                     object-fit: cover;
                 }
+                #effect-overlay {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    pointer-events: none;
+                    z-index: 5;
+                    opacity: 0;
+                    transition: opacity 0.1s;
+                }
                 .red-glow {
                     animation: red-glow-anim 1s infinite;
                 }
@@ -457,6 +517,14 @@ function initializeCurtainWindow() {
                     50% {
                         box-shadow: inset 0 0 60px rgba(255, 0, 0, 0.9), 0 0 60px rgba(255, 0, 0, 1);
                         border: 5px solid rgba(255, 0, 0, 1);
+                    }
+                }
+                @keyframes red-pulse {
+                    0%, 100% {
+                        opacity: 0.3;
+                    }
+                    50% {
+                        opacity: 0.7;
                     }
                 }
                 #close-button {
@@ -486,10 +554,68 @@ function initializeCurtainWindow() {
         </head>
         <body>
             <img id="curtain-image" src="./images/curtain1.png" />
-            <button id="close-button" onmousedown="if(window.opener) window.opener.paranormalCurtainDown()" onmouseup="if(window.opener) window.opener.paranormalCurtainUp()">CLOSE</button>
+            <div id="effect-overlay"></div>
+            <button id="close-button">CLOSE</button>
+            <script>
+                (function() {
+                    const btn = document.getElementById('close-button');
+                    let isPressed = false;
+
+                    function handleDown() {
+                        if (!isPressed && window.opener) {
+                            isPressed = true;
+                            window.opener.paranormalCurtainDown();
+                        }
+                    }
+
+                    function handleUp() {
+                        if (isPressed && window.opener) {
+                            isPressed = false;
+                            window.opener.paranormalCurtainUp();
+                        }
+                    }
+
+                    btn.addEventListener('mousedown', handleDown);
+                    btn.addEventListener('mouseup', handleUp);
+                    btn.addEventListener('mouseleave', handleUp);
+                    btn.addEventListener('blur', handleUp);
+
+                    // Handle global mouseup to catch releases outside the button
+                    document.addEventListener('mouseup', handleUp);
+                })();
+            </script>
         </body>
         </html>
     `);
+}
+
+/**
+ * Updates timer display in status window
+ */
+export function updateTimerDisplay(timeRemaining) {
+    const statusWin = getStatusWindow();
+    if (statusWin && statusWin.document) {
+        const timerDisplay = statusWin.document.getElementById('timer-display');
+        if (timerDisplay) {
+            if (timeRemaining < 0) {
+                timerDisplay.textContent = '--:--';
+                timerDisplay.style.color = '#ffff00';
+            } else {
+                const minutes = Math.floor(timeRemaining / 60000);
+                const seconds = Math.floor((timeRemaining % 60000) / 1000);
+                timerDisplay.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+
+                // Change color based on time remaining
+                if (timeRemaining < 30000) { // Less than 30 seconds
+                    timerDisplay.style.color = '#ff0000';
+                } else if (timeRemaining < 60000) { // Less than 1 minute
+                    timerDisplay.style.color = '#ff9900';
+                } else {
+                    timerDisplay.style.color = '#ffff00';
+                }
+            }
+        }
+    }
 }
 
 /**
@@ -741,7 +867,19 @@ export function addRedGlowToWindow(windowName) {
                 getCurtainWindow();
 
     if (win && !win.closed && win.document && win.document.body) {
-        win.document.body.classList.add('red-glow');
+        // For curtain window, apply glow to overlay instead of body
+        if (windowName === 'curtain') {
+            const overlay = win.document.getElementById('effect-overlay');
+            if (overlay) {
+                // Create pulsing red glow effect
+                overlay.style.background = 'rgba(255, 0, 0, 0.5)';
+                overlay.style.opacity = '1';
+                overlay.style.animation = 'red-pulse 1s infinite';
+                overlay.classList.add('red-glow-overlay');
+            }
+        } else {
+            win.document.body.classList.add('red-glow');
+        }
     }
 }
 
@@ -754,7 +892,17 @@ export function removeRedGlowFromWindow(windowName) {
                 getCurtainWindow();
 
     if (win && !win.closed && win.document && win.document.body) {
-        win.document.body.classList.remove('red-glow');
+        // For curtain window, clear overlay effects
+        if (windowName === 'curtain') {
+            const overlay = win.document.getElementById('effect-overlay');
+            if (overlay) {
+                overlay.style.opacity = '0';
+                overlay.style.animation = '';
+                overlay.classList.remove('red-glow-overlay');
+            }
+        } else {
+            win.document.body.classList.remove('red-glow');
+        }
     }
 }
 
@@ -765,6 +913,37 @@ export function closeGameWindows() {
     if (finderWindow && !finderWindow.closed) finderWindow.close();
     if (flashlightWindow && !flashlightWindow.closed) flashlightWindow.close();
     if (curtainWindow && !curtainWindow.closed) curtainWindow.close();
+}
+
+/**
+ * Triggers a brief rainbow glow on the curtain (success feedback)
+ */
+export function triggerCurtainSuccessGlow() {
+    const curtainWin = getCurtainWindow();
+    if (!curtainWin || curtainWin.closed) return;
+
+    const overlay = curtainWin.document.getElementById('effect-overlay');
+    if (!overlay) return;
+
+    // Quick rainbow pulse effect
+    const colors = ['#ff0000', '#ff7f00', '#ffff00', '#00ff00', '#0000ff', '#8b00ff'];
+    let flashCount = 0;
+    const maxFlashes = 6; // One full cycle through rainbow
+
+    const flashInterval = setInterval(() => {
+        const color = colors[flashCount % colors.length];
+        overlay.style.background = `radial-gradient(circle, ${color}, transparent)`;
+        overlay.style.opacity = '0.4';
+
+        flashCount++;
+        if (flashCount >= maxFlashes) {
+            clearInterval(flashInterval);
+            // Fade out
+            setTimeout(() => {
+                overlay.style.opacity = '0';
+            }, 100);
+        }
+    }, 100);
 }
 
 /**
@@ -780,9 +959,18 @@ export function triggerRainbowFlash() {
     const flashInterval = setInterval(() => {
         const color = colors[flashCount % colors.length];
 
-        windows.forEach(win => {
+        windows.forEach((win, idx) => {
             if (win && !win.closed && win.document && win.document.body) {
-                win.document.body.style.background = color;
+                // For curtain window, use the effect overlay
+                if (idx === 2) {
+                    const overlay = win.document.getElementById('effect-overlay');
+                    if (overlay) {
+                        overlay.style.background = color;
+                        overlay.style.opacity = '0.7';
+                    }
+                } else {
+                    win.document.body.style.background = color;
+                }
             }
         });
 
@@ -792,9 +980,18 @@ export function triggerRainbowFlash() {
             // Reset backgrounds by removing inline styles so CSS classes work again
             windows.forEach((win, idx) => {
                 if (win && !win.closed && win.document && win.document.body) {
-                    if (idx === 0) win.document.body.style.background = 'linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%)';
-                    else if (idx === 1) win.document.body.style.background = ''; // Clear inline style to allow CSS classes to work
-                    else if (idx === 2) win.document.body.style.background = '#000000';
+                    if (idx === 0) {
+                        win.document.body.style.background = 'linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%)';
+                    } else if (idx === 1) {
+                        win.document.body.style.background = ''; // Clear inline style to allow CSS classes to work
+                    } else if (idx === 2) {
+                        // Reset curtain overlay
+                        const overlay = win.document.getElementById('effect-overlay');
+                        if (overlay) {
+                            overlay.style.opacity = '0';
+                        }
+                        win.document.body.style.background = '#000000';
+                    }
                 }
             });
         }
