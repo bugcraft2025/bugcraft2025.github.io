@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INITIAL</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="filmEffect.css">
+</head>
+<body>
+    <!-- Make #clock-container a child of #dialogue-box -->
+    <div id="dialogue-box">
+        <!-- Clock is now the first child, visually above content -->
+        <div id="clock-container"></div>
+
+        <div class="film-overlay">
+            <div class="film-grain"></div>
+            <div class="film-scratches"></div>
+            <div class="flicker"></div>
+            <div class="vignette"></div>
+        </div>
+
+        <div class="snake-overlay">
+            <div class="snake-scales"></div>
+        </div>
+
+        <div class="dialogue-content">
+            <p id="dialogue-text"></p>
+        </div>
+        <div id="choice-container"></div>
+        <div id="navigation">
+            <button id="next-button">→</button> <!-- Right arrow HTML entity -->
+        </div>
+    </div> <!-- End of dialogue-box -->
+
+    <!-- Add type="module" here -->
+    <script type="module" src="script.js"></script>
+
+</body>
+</html>

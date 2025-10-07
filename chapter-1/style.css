@@ -1,0 +1,545 @@
+/* style.css */
+
+body {
+    background-color: #000;
+    color: #ccc;
+    display: flex;
+    justify-content: center;
+    align-items: center; /* This centers the dialogue box vertically */
+    min-height: 100vh;
+    margin: 0;
+    font-family: 'Courier New', Courier, monospace;
+    /* Add padding if the clock might touch the very top edge of viewport */
+    padding-top: 50px; /* Adjust as needed */
+    box-sizing: border-box; /* Include padding in height calculation */
+    /* Add overflow: hidden to prevent scrollbars if particles go way off screen */
+    overflow: hidden;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); } /* Optional slight upward move */
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulseGlow {
+    0% { box-shadow: 0 0 10px rgba(150, 150, 150, 0.1); }
+    50% { box-shadow: 0 0 15px rgba(180, 180, 180, 0.15); }
+    100% { box-shadow: 0 0 10px rgba(150, 150, 150, 0.1); }
+}
+
+#dialogue-box {
+    background-color: rgba(17, 17, 17, 0.95);
+    border: 1px solid #333;
+    padding: 25px;
+    width: 80%;
+    max-width: 600px;
+    opacity: 0;
+    animation: fadeIn 1.5s ease-out forwards, pulseGlow 5s infinite ease-in-out;
+    animation-delay: 0.2s;
+    position: relative; /* Crucial for positioning the clock relative to it */
+    /* Removed margin-top: 250px; Let body's align-items center it */
+    /* overflow: hidden; NO LONGER NEEDED - allow clock to show outside */
+}
+
+.dialogue-content {
+    margin-bottom: 15px;
+    min-height: 100px;
+    position: relative;
+    z-index: 10;
+}
+
+#choice-container {
+    margin-top: 20px;
+    min-height: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    z-index: 10;
+}
+
+.choice-button {
+    background-color: #222;
+    border: 1px solid #444;
+    color: #bbb;
+    padding: 10px 15px;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.9em;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out forwards;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.choice-button:hover {
+    background-color: #333;
+    color: #fff;
+}
+
+#dialogue-text {
+    font-size: 1.1em;
+    line-height: 1.6;
+}
+
+
+#navigation {
+    text-align: right;
+    position: relative;
+    z-index: 10;
+}
+
+#next-button {
+    background: none;
+    border: none;
+    color: #ccc;
+    font-size: 2em;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.3s, opacity 0.3s;
+}
+
+#next-button.disabled {
+    color: #555;
+    cursor: default;
+    opacity: 0.5;
+}
+
+#next-button:not(.disabled):hover {
+    color: #fff;
+}
+
+/* --- Clock Styles (Keep as is) --- */
+#clock-container {
+    position: absolute;
+    top: -220px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    z-index: 5;
+    pointer-events: none;
+    filter: drop-shadow(0 0 8px rgba(200, 200, 200, 0.3));
+}
+
+#clock-container.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+.clock-face { stroke: #555; stroke-width: 2; fill: #1a1a1a; }
+.clock-center-dot { fill: #ddd; }
+.clock-hour-hand, .clock-minute-hand { stroke: #ddd; stroke-linecap: round; }
+.clock-hour-hand { stroke-width: 5; transform: rotate(191deg); transform-origin: center; }
+.clock-minute-hand { stroke-width: 3; transform: rotate(132deg); transform-origin: center; }
+.clock-number { fill: #aaa; font-family: 'Courier New', Courier, monospace; font-size: 10px; text-anchor: middle; dominant-baseline: middle; }
+@keyframes rotateHourBackwards { from { transform: rotate(24000deg); } to { transform: rotate(0deg); } }
+@keyframes rotateMinuteBackwards { from { transform: rotate(0deg); } to { transform: rotate(-288000deg); } }
+.animate-hour { animation: rotateHourBackwards 500s linear forwards; transform-origin: center; }
+.animate-minute { animation: rotateMinuteBackwards 500s linear forwards; transform-origin: center; }
+
+
+/* --- Dialogue Box Break Effect --- */
+
+/* Hide the original box instantly when breaking */
+#dialogue-box.breaking {
+    opacity: 0;
+    pointer-events: none;
+    transition: none; /* Ensure it disappears immediately */
+    animation: none; /* Override existing animations like pulseGlow */
+}
+
+/* Base styles for the halves created during the break */
+.dialogue-half {
+    position: absolute; /* Set by JS */
+    overflow: hidden;   /* Crucial for clipping */
+    box-sizing: border-box;
+    /* Replicate original box appearance */
+    background-color: rgba(17, 17, 17, 0.95);
+    border: 1px solid #333; /* Maybe remove border or set border-color: transparent for effect */
+    border-color: transparent; /* Hide border on fragments */
+    z-index: 100; /* Ensure they appear above other elements */
+
+    /* Apply the drop animation */
+    animation: dropAndFade 1.5s ease-in forwards;
+}
+
+/* Jagged clip-path points (Define carefully - must match between left/right) */
+/* Points are [X Y], percentage based */
+/* More points = more jaggedness */
+/* Make sure the Y values cover 0% to 100% */
+.dialogue-left-half {
+    clip-path: polygon(
+        0 0, /* Top Left */
+        50% 0, /* Top Center */
+        48% 15%, /* Jagged points near center */
+        53% 30%,
+        47% 45%,
+        51% 60%,
+        49% 75%,
+        52% 90%,
+        50% 100%, /* Bottom Center */
+        0 100% /* Bottom Left */
+    );
+    --tx: -15px; /* Custom property used in animation */
+    --rotate: -4deg; /* Slightly more rotation */
+}
+
+.dialogue-right-half {
+    /* IMPORTANT: The points along the dividing line MUST mirror the left half */
+    clip-path: polygon(
+        50% 0, /* Top Center */
+        100% 0, /* Top Right */
+        100% 100%, /* Bottom Right */
+        50% 100%, /* Bottom Center */
+        52% 90%, /* Jagged points near center (mirrored) */
+        49% 75%,
+        51% 60%,
+        47% 45%,
+        53% 30%,
+        48% 15%
+    );
+    --tx: 15px;
+    --rotate: 4deg; /* Slightly more rotation */
+}
+
+/* Keyframes for the drop and fade animation (adjust if needed) */
+@keyframes dropAndFade {
+    0% {
+        opacity: 1;
+        transform: translateY(0) translateX(0) rotate(0deg);
+        border-color: #333; /* Start with original border */
+    }
+    5% { /* Quick separation */
+        transform: translateY(5px) translateX(var(--tx)) rotate(var(--rotate));
+        border-color: transparent; /* Hide border early */
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(80vh) translateX(calc(var(--tx) * 3)) rotate(calc(var(--rotate) * 2)); /* Exaggerate movement */
+    }
+}
+
+/* --- Dialogue Escape Sequence --- */
+
+#dialogue-box.dialogue-hole {
+    animation: none;
+    position: relative;
+    pointer-events: none;
+}
+
+.dialogue-hole-mask {
+    display: none;
+    position: absolute;
+    inset: 0;
+    border-radius: 16px;
+    background: radial-gradient(circle at 50% 40%, rgba(12, 16, 45, 0.92), rgba(7, 9, 25, 0.55) 52%, transparent 100%);
+    border: 2px dashed rgba(120, 150, 255, 0.32);
+    align-items: center;
+    justify-content: center;
+    color: rgba(180, 195, 255, 0.55);
+    font-size: 0.95rem;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    padding-left: 0.28em;
+    animation: shimmerHole 2.6s ease-in-out infinite;
+    text-align: center;
+    z-index: 2;
+}
+
+#dialogue-box.dialogue-hole .dialogue-hole-mask {
+    display: flex;
+}
+
+#dialogue-box.dialogue-hole > :not(.dialogue-hole-mask) {
+    opacity: 0;
+    pointer-events: none;
+}
+
+@keyframes shimmerHole {
+    0% { opacity: 0.4; }
+    50% { opacity: 0.8; }
+    100% { opacity: 0.4; }
+}
+
+.dialogue-box-floating {
+    position: absolute;
+    padding: 25px;
+    background-color: rgba(17, 17, 17, 0.95);
+    border: 1px solid #333;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    transition: transform 1.25s cubic-bezier(0.22, 0.68, 0.24, 1.12), opacity 1.25s ease-out;
+    color: #ccc;
+    font-family: 'Courier New', Courier, monospace;
+    background-clip: padding-box;
+}
+
+.dialogue-box-floating .floating-id-dialogue-text {
+    font-size: 1.1em;
+    line-height: 1.6;
+}
+
+.dialogue-box-floating .floating-id-choice-container {
+    margin-top: 20px;
+    min-height: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    z-index: 10;
+}
+
+.dialogue-box-floating .floating-id-next-button {
+    background: none;
+    border: none;
+    color: #ccc;
+    font-size: 2em;
+    cursor: pointer;
+    padding: 5px;
+    transition: color 0.3s, opacity 0.3s;
+}
+
+.dialogue-box-floating .floating-id-next-button.disabled {
+    color: #555;
+    cursor: default;
+    opacity: 0.5;
+}
+
+.dialogue-box-floating .floating-id-navigation {
+    text-align: right;
+    position: relative;
+    z-index: 10;
+}
+
+.dialogue-box-floating .floating-id-clock-container {
+    position: absolute;
+    top: -220px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 200px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.dialogue-box-floating.escape {
+    transform: translate3d(180px, -220px, 0) scale(0.72) rotate(-6deg);
+    opacity: 0;
+}
+
+.popup-blocked-hint {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: rgba(15, 18, 40, 0.92);
+    border: 1px solid rgba(200, 120, 140, 0.65);
+    color: rgba(255, 210, 230, 0.92);
+    padding: 14px 18px;
+    border-radius: 10px;
+    box-shadow: 0 12px 28px rgba(6, 2, 12, 0.55);
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+    z-index: 400;
+    font-size: 0.85rem;
+    letter-spacing: 0.04em;
+}
+
+.popup-blocked-hint.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- Particle Styles --- */
+.particle {
+    position: absolute;
+    width: 3px; /* Can be varied in JS */
+    height: 3px; /* Can be varied in JS */
+    background-color: rgba(200, 200, 200, 0.7); /* Shard color */
+    border-radius: 0; /* Square shards */
+    z-index: 99; /* Below halves or above (101)? Try 99 */
+    pointer-events: none; /* Don't interfere with clicks */
+    opacity: 0; /* Start hidden */
+    /* Custom properties will be set by JS */
+    transform: translate(var(--tx, 0), var(--ty, 0)) scale(var(--scale, 1));
+    animation: particle-burst 0.8s ease-out forwards;
+    /* Animation delay will be set by JS */
+}
+
+@keyframes particle-burst {
+    0% {
+        opacity: 0.8;
+        transform: translate(0, 0) scale(1); /* Start at origin */
+    }
+    100% {
+        opacity: 0;
+        /* JS sets --particle-end-tx and --particle-end-ty */
+        transform: translate(var(--particle-end-tx, 0), var(--particle-end-ty, 0)) scale(0); /* Fly out and shrink */
+    }
+}
+
+/* --- Snake Skin Effect --- */
+.snake-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    z-index: 5;
+}
+
+.snake-overlay.active {
+    opacity: 1;
+}
+
+.snake-scales {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background:
+        repeating-linear-gradient(
+            45deg,
+            rgba(50, 80, 50, 0.6) 0px,
+            rgba(50, 80, 50, 0.6) 10px,
+            rgba(30, 60, 30, 0.7) 10px,
+            rgba(30, 60, 30, 0.7) 20px,
+            rgba(70, 100, 70, 0.5) 20px,
+            rgba(70, 100, 70, 0.5) 30px,
+            rgba(40, 70, 40, 0.65) 30px,
+            rgba(40, 70, 40, 0.65) 40px
+        ),
+        repeating-linear-gradient(
+            -45deg,
+            rgba(60, 90, 60, 0.4) 0px,
+            rgba(60, 90, 60, 0.4) 15px,
+            rgba(35, 65, 35, 0.6) 15px,
+            rgba(35, 65, 35, 0.6) 30px
+        );
+    background-size: 200% 200%, 200% 200%;
+    animation: snakeSkinMove 8s linear infinite;
+    mix-blend-mode: overlay;
+}
+
+@keyframes snakeSkinMove {
+    0% {
+        background-position: 0% 0%, 100% 100%;
+    }
+    100% {
+        background-position: 200% 200%, -100% -100%;
+    }
+}
+
+/* --- Eye Effect --- */
+#dialogue-box.eye-effect {
+    animation: eyePulse 3s ease-in-out infinite;
+    filter: blur(0.5px) contrast(1.1);
+}
+
+@keyframes eyePulse {
+    0%, 100% {
+        filter: blur(0px) contrast(1);
+        opacity: 0.95;
+    }
+    50% {
+        filter: blur(1px) contrast(1.2);
+        opacity: 0.85;
+    }
+}
+
+/* --- Yellow Screen Overlay --- */
+.yellow-screen-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: #FFD700;
+    opacity: 0;
+    pointer-events: none;
+    z-index: -1;
+    transition: opacity 3s ease-in-out;
+}
+
+.yellow-screen-overlay.active {
+    opacity: 0.35;
+}
+
+/* --- Censor Effect --- */
+censor {
+    position: relative;
+    display: inline-block;
+}
+
+censor.censor-text {
+    position: relative;
+    display: inline-block;
+}
+
+censor.censored::before,
+censor.censored::after {
+    content: '';
+    position: absolute;
+    left: -8px;
+    right: -8px;
+    height: 12px;
+    background: #000;
+    pointer-events: none;
+    z-index: 10;
+    animation: censorScribble 0.3s ease-out forwards;
+    box-shadow:
+        0 0 4px 2px rgba(0, 0, 0, 0.5),
+        0 2px 0 0 rgba(0, 0, 0, 0.9),
+        0 -2px 0 0 rgba(0, 0, 0, 0.9);
+}
+
+censor.censored::before {
+    top: 15%;
+    background: repeating-linear-gradient(
+        90deg,
+        #000 0px,
+        #000 4px,
+        transparent 4px,
+        transparent 4.5px
+    );
+    background-size: 9px 100%;
+    transform: skewY(-2deg);
+    filter: blur(0.4px);
+}
+
+censor.censored::after {
+    top: 45%;
+    background: repeating-linear-gradient(
+        90deg,
+        #000 0px,
+        #000 4px,
+        transparent 4px,
+        transparent 4.5px
+    );
+    background-size: 10px 100%;
+    transform: skewY(2deg);
+    filter: blur(0.4px);
+}
+
+@keyframes censorScribble {
+    0% {
+        opacity: 0;
+        transform: scaleX(0) skewY(0deg);
+        transform-origin: left;
+    }
+    100% {
+        opacity: 0.95;
+        transform: scaleX(1) skewY(var(--skew, 0deg));
+        transform-origin: left;
+    }
+}

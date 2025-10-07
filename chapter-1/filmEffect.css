@@ -1,0 +1,179 @@
+/* filmEffect.css */
+
+/* Main container for all effects */
+.film-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Allows interaction with content underneath */
+    overflow: hidden; /* Ensures effects don't spill out */
+    opacity: 0; /* Start hidden */
+    transition: opacity 0.5s ease-in-out;
+    z-index: 10; /* Adjust as needed to be above content */
+}
+
+/* Make overlay visible */
+.film-overlay.active {
+    opacity: 1; /* Control overall effect intensity here if needed */
+}
+
+/* === Effect Layers === */
+
+/* Film grain effect using SVG Filter */
+.film-grain {
+    position: absolute;
+    top: -50%; /* Position offset for animation */
+    left: -50%; /* Position offset for animation */
+    width: 200%; /* Larger size for animation */
+    height: 200%; /* Larger size for animation */
+    pointer-events: none;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    opacity: 0.15; /* Lower value for subtle grain */
+    mix-blend-mode: overlay; /* Or 'soft-light', 'multiply' - experiment! */
+    animation: grain 0.7s steps(5, end) infinite;
+}
+
+/* --- REMOVED SCANLINES SECTION --- */
+
+/* NEW: Film Scratches Effect */
+.film-scratches {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: hidden; /* Important to contain pseudo-elements */
+}
+
+/* Use pseudo-elements for individual scratch lines */
+.film-scratches::before,
+.film-scratches::after {
+    content: '';
+    position: absolute;
+    display: block;
+    width: 100%; /* Full width scratch */
+    height: 1px; /* Thin line - adjust as needed */
+    background: rgba(255, 255, 255, 0.5); /* Scratch color and intensity */
+    opacity: 0; /* Start hidden */
+    left: 0; /* Align to left */
+
+    /* Animation will control 'top' and 'opacity' */
+}
+
+/* Apply animations with different timings for randomness */
+.film-scratches::before {
+    animation: scratch1 7s linear infinite;
+    animation-delay: 0.2s; /* Optional: slight delay offset */
+}
+
+.film-scratches::after {
+    height: 2px; /* Make the second scratch slightly different */
+    background: rgba(230, 230, 230, 0.4);
+    animation: scratch2 5s linear infinite;
+    animation-delay: 1.5s; /* Optional: different delay offset */
+}
+
+
+/* Flicker effect (similar to original) */
+.flicker {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: rgba(255, 255, 255, 0.02);
+    animation: flicker 0.15s infinite alternate; /* Faster, alternating flicker */
+}
+
+/* Optional: Vignette effect */
+.vignette {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center,
+        rgba(0,0,0,0) 50%, /* Center is transparent */
+        rgba(0,0,0,0.25) 100% /* Edges darken */
+    );
+    mix-blend-mode: multiply; /* Good for darkening */
+    opacity: 0.8; /* Adjust vignette strength */
+}
+
+
+/* === Keyframes === */
+
+/* Animate grain position slightly */
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-2%, -3%); }
+  20% { transform: translate(3%, 1%); }
+  30% { transform: translate(-1%, -2%); }
+  40% { transform: translate(2%, 2%); }
+  50% { transform: translate(-3%, 1%); }
+  60% { transform: translate(1%, -1%); }
+  70% { transform: translate(-2%, 3%); }
+  80% { transform: translate(3%, -2%); }
+  90% { transform: translate(-1%, 0%); }
+}
+
+/* --- REMOVED @keyframes scanlines --- */
+
+/* NEW: Keyframes for Scratches */
+/* We define steps where the scratch appears briefly at a specific vertical position */
+
+@keyframes scratch1 {
+    0%    { opacity: 0; top: 15%; } /* Start hidden */
+    1%    { opacity: 0.7; top: 15%; } /* Appear */
+    2.5%  { opacity: 0; top: 15%; } /* Disappear */
+
+    10%   { opacity: 0; top: 80%; } /* Hidden, different position */
+    10.5% { opacity: 0.6; top: 80%; }
+    12%   { opacity: 0; top: 80%; }
+
+    30%   { opacity: 0; top: 45%; }
+    30.8% { opacity: 0.75; top: 45%; }
+    32%   { opacity: 0; top: 45%; }
+
+    65%   { opacity: 0; top: 22%; }
+    65.2% { opacity: 0.5; top: 22%; }
+    67%   { opacity: 0; top: 22%; }
+
+    100%  { opacity: 0; top: 50%; } /* End hidden */
+}
+
+@keyframes scratch2 {
+    0%    { opacity: 0; top: 5%; }
+    0.5%  { opacity: 0.6; top: 5%; }
+    2%    { opacity: 0; top: 5%; }
+
+    20%   { opacity: 0; top: 60%; }
+    21%   { opacity: 0.5; top: 60%; }
+    23%   { opacity: 0; top: 60%; }
+
+    45%   { opacity: 0; top: 30%; }
+    45.5% { opacity: 0.7; top: 30%; }
+    47%   { opacity: 0; top: 30%; }
+
+    80%   { opacity: 0; top: 90%; }
+    80.3% { opacity: 0.4; top: 90%; }
+    82%   { opacity: 0; top: 90%; }
+
+    100%  { opacity: 0; top: 70%; }
+}
+
+
+/* Animate flicker opacity */
+@keyframes flicker {
+    0% { opacity: 0.2; }
+    20% { opacity: 0.35; }
+    40% { opacity: 0.15; }
+    60% { opacity: 0.4; }
+    80% { opacity: 0.25; }
+    100% { opacity: 0.3; }
+}
