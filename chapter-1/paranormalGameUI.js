@@ -49,6 +49,9 @@ export function openGameWindows() {
         return false;
     }
 
+    // Store reference to status window in main window
+    const statusWindowRef = window;
+
     // Store spawn function in main window so it can be called
     mainWindow.spawnParanormalWindows = function() {
         // Supernatural Finder - left side
@@ -60,12 +63,38 @@ export function openGameWindows() {
         // Curtain - right side
         const curtain = mainWindow.open('', 'paranormalCurtain', `width=400,height=400,left=${sw-500},top=200`);
 
-        // Send window references back to status window
-        if (window.opener && window.opener.receiveParanormalWindows) {
-            window.opener.receiveParanormalWindows(finder, flashlight, curtain);
+        // Send window references back to status window using direct reference
+        if (statusWindowRef && statusWindowRef.receiveParanormalWindows) {
+            statusWindowRef.receiveParanormalWindows(finder, flashlight, curtain);
         }
     };
 
+    // Set up forwarding functions in main window for component windows to call
+    mainWindow.paranormalScanAction = function() {
+        if (statusWindowRef && statusWindowRef.paranormalScanAction) {
+            statusWindowRef.paranormalScanAction();
+        }
+    };
+    mainWindow.paranormalFlashlightDown = function() {
+        if (statusWindowRef && statusWindowRef.paranormalFlashlightDown) {
+            statusWindowRef.paranormalFlashlightDown();
+        }
+    };
+    mainWindow.paranormalFlashlightUp = function() {
+        if (statusWindowRef && statusWindowRef.paranormalFlashlightUp) {
+            statusWindowRef.paranormalFlashlightUp();
+        }
+    };
+    mainWindow.paranormalCurtainDown = function() {
+        if (statusWindowRef && statusWindowRef.paranormalCurtainDown) {
+            statusWindowRef.paranormalCurtainDown();
+        }
+    };
+    mainWindow.paranormalCurtainUp = function() {
+        if (statusWindowRef && statusWindowRef.paranormalCurtainUp) {
+            statusWindowRef.paranormalCurtainUp();
+        }
+    };
     // Set up receiver for window references
     window.receiveParanormalWindows = function(finder, flashlight, curtain) {
         finderWindow = finder;
@@ -230,15 +259,14 @@ function initializeFinderWindow() {
                     cursor: not-allowed;
                 }
                 .edge-arrow {
-                    position: fixed;
-                    width: 30px;
-                    height: 30px;
+                    position: absolute;
+                    width: 0;
+                    height: 0;
                     z-index: 100;
+                    border-left: 8px solid transparent;
+                    border-right: 8px solid transparent;
+                    border-bottom: 15px solid #00ff00;
                 }
-                .edge-arrow.top { border-left: 15px solid transparent; border-right: 15px solid transparent; border-bottom: 25px solid #00ff00; }
-                .edge-arrow.bottom { border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 25px solid #00ff00; }
-                .edge-arrow.left { border-top: 15px solid transparent; border-bottom: 15px solid transparent; border-right: 25px solid #00ff00; }
-                .edge-arrow.right { border-top: 15px solid transparent; border-bottom: 15px solid transparent; border-left: 25px solid #00ff00; }
                 .red-glow {
                     animation: red-glow-anim 1s infinite;
                 }
@@ -251,7 +279,7 @@ function initializeFinderWindow() {
         <body>
             <div id="radar-screen"></div>
             <div id="edge-arrows"></div>
-            <button id="scan-button" onclick="window.opener.paranormalScanAction()">SCAN</button>
+            <button id="scan-button" onclick="if(window.opener) window.opener.paranormalScanAction()">SCAN</button>
         </body>
         </html>
     `);
@@ -295,6 +323,17 @@ function initializeFlashlightWindow() {
                 .enemy-sprite.visible {
                     opacity: 1;
                 }
+                .enemy-sprite.identified {
+                    animation: identified-glow 1.5s ease-in-out infinite;
+                }
+                @keyframes identified-glow {
+                    0%, 100% {
+                        filter: drop-shadow(0 0 10px rgba(0, 255, 0, 0.8)) drop-shadow(0 0 20px rgba(0, 255, 0, 0.6));
+                    }
+                    50% {
+                        filter: drop-shadow(0 0 20px rgba(0, 255, 0, 1)) drop-shadow(0 0 30px rgba(0, 255, 0, 0.8));
+                    }
+                }
                 .red-glow {
                     animation: red-glow-anim 1s infinite;
                 }
@@ -302,10 +341,33 @@ function initializeFlashlightWindow() {
                     0%, 100% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.5); }
                     50% { box-shadow: 0 0 60px rgba(255, 0, 0, 1); }
                 }
+                #light-button {
+                    position: absolute;
+                    bottom: 30px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    padding: 15px 40px;
+                    background: rgba(255, 255, 0, 0.3);
+                    border: 2px solid #ffff00;
+                    color: #ffff00;
+                    font-size: 18px;
+                    font-weight: bold;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                    font-family: 'Courier New', monospace;
+                }
+                #light-button:hover {
+                    background: rgba(255, 255, 0, 0.5);
+                    box-shadow: 0 0 20px rgba(255, 255, 0, 0.8);
+                }
+                #light-button:active {
+                    transform: translateX(-50%) scale(0.95);
+                }
             </style>
         </head>
-        <body onmousedown="window.opener.paranormalFlashlightDown()" onmouseup="window.opener.paranormalFlashlightUp()">
+        <body>
             <div id="enemy-container"></div>
+            <button id="light-button" onmousedown="if(window.opener) window.opener.paranormalFlashlightDown()" onmouseup="if(window.opener) window.opener.paranormalFlashlightUp()">LIGHT</button>
         </body>
         </html>
     `);
@@ -353,10 +415,34 @@ function initializeCurtainWindow() {
                     0%, 100% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.5); }
                     50% { box-shadow: 0 0 60px rgba(255, 0, 0, 1); }
                 }
+                #close-button {
+                    position: absolute;
+                    bottom: 30px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    padding: 15px 40px;
+                    background: rgba(150, 75, 0, 0.7);
+                    border: 2px solid #996633;
+                    color: #ffcc99;
+                    font-size: 18px;
+                    font-weight: bold;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                    font-family: 'Courier New', monospace;
+                    z-index: 10;
+                }
+                #close-button:hover {
+                    background: rgba(150, 75, 0, 0.9);
+                    box-shadow: 0 0 20px rgba(150, 75, 0, 0.8);
+                }
+                #close-button:active {
+                    transform: translateX(-50%) scale(0.95);
+                }
             </style>
         </head>
-        <body onmousedown="window.opener.paranormalCurtainDown()" onmouseup="window.opener.paranormalCurtainUp()">
+        <body>
             <img id="curtain-image" src="./images/curtain1.png" />
+            <button id="close-button" onmousedown="if(window.opener) window.opener.paranormalCurtainDown()" onmouseup="if(window.opener) window.opener.paranormalCurtainUp()">CLOSE</button>
         </body>
         </html>
     `);
@@ -439,11 +525,11 @@ export function updateCurtainState(isClosing) {
     if (!curtainImg) return;
 
     if (isClosing) {
-        curtainClosed = true;
         curtainStage = Math.min(4, curtainStage + 1);
-    } else {
         curtainClosed = curtainStage === 4;
+    } else {
         curtainStage = Math.max(1, curtainStage - 1);
+        curtainClosed = curtainStage === 4;
     }
 
     curtainImg.src = `./images/curtain${curtainStage}.png`;

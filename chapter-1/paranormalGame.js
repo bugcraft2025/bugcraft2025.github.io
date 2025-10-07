@@ -40,7 +40,7 @@ export function spawnEnemy(type, sw, sh) {
         stage: 1,
         identified: false,
         lastUpdate: Date.now(),
-        riftClickCount: 0 // For rift enemy - tracks flashlight clicks
+        riftFlashCount: 0 // For rift enemy - tracks flashlight flashes
     };
 
     gameState.enemies.push(enemy);
@@ -78,20 +78,28 @@ export function identifyEnemy(enemyId) {
 }
 
 /**
- * Checks if flashlight is over an identified rift and increments click count
+ * Increments flash count for identified rifts in the flashlight view
+ * Returns array of rift IDs that were flashed
  */
-export function flashlightClickOnRift(enemyId) {
-    const enemy = gameState.enemies.find(e => e.id === enemyId && e.type === 'rift' && e.identified);
-    if (enemy) {
-        enemy.riftClickCount = (enemy.riftClickCount || 0) + 1;
+export function flashRiftsInView(flashlightBounds) {
+    const flashedRifts = [];
 
-        // Rift requires 10 clicks to destroy
-        if (enemy.riftClickCount >= 10) {
-            return 'destroyed';
+    gameState.enemies.forEach(enemy => {
+        if (enemy.type !== 'rift' || !enemy.identified) return;
+
+        const inView = enemy.x >= flashlightBounds.left && enemy.x <= flashlightBounds.right &&
+                      enemy.y >= flashlightBounds.top && enemy.y <= flashlightBounds.bottom;
+
+        if (inView) {
+            enemy.riftFlashCount = (enemy.riftFlashCount || 0) + 1;
+            flashedRifts.push({
+                id: enemy.id,
+                count: enemy.riftFlashCount
+            });
         }
-        return 'hit';
-    }
-    return 'miss';
+    });
+
+    return flashedRifts;
 }
 
 /**
@@ -148,7 +156,7 @@ export function resetEnemy(enemyId) {
         enemy.lastUpdate = Date.now();
         enemy.identified = false;
         if (enemy.type === 'rift') {
-            enemy.riftClickCount = 0;
+            enemy.riftFlashCount = 0;
         }
     }
 }

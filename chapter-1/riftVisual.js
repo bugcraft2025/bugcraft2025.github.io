@@ -94,6 +94,40 @@ export function createRiftElement(stage) {
 }
 
 /**
+ * Creates a rift explosion animation element
+ * @returns {HTMLElement} - The explosion container element
+ */
+export function createRiftExplosion() {
+    const container = document.createElement('div');
+    container.className = 'rift-explosion';
+
+    // Create expanding rings
+    for (let i = 0; i < 4; i++) {
+        const ring = document.createElement('div');
+        ring.className = 'explosion-ring';
+        ring.style.animationDelay = `${i * 0.1}s`;
+        container.appendChild(ring);
+    }
+
+    // Create particles
+    for (let i = 0; i < 12; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'explosion-particle';
+        const angle = (360 / 12) * i;
+        particle.style.setProperty('--angle', `${angle}deg`);
+        particle.style.animationDelay = `${Math.random() * 0.2}s`;
+        container.appendChild(particle);
+    }
+
+    // Create flash
+    const flash = document.createElement('div');
+    flash.className = 'explosion-flash';
+    container.appendChild(flash);
+
+    return container;
+}
+
+/**
  * Injects rift animation styles into the document
  * @param {Document} doc - The document to inject styles into
  */
@@ -182,6 +216,88 @@ export function injectRiftStyles(doc) {
             0%, 100% { transform: rotate(0deg) scaleY(1); }
             33% { transform: rotate(-15deg) scaleY(1.2); }
             66% { transform: rotate(15deg) scaleY(0.9); }
+        }
+
+        .rift-explosion {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            pointer-events: none;
+        }
+
+        .explosion-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 100, 255, 0.8);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: explosionRing 0.6s ease-out forwards;
+        }
+
+        .explosion-particle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 150, 255, 0.9);
+            border-radius: 50%;
+            box-shadow: 0 0 8px rgba(255, 100, 255, 0.8);
+            animation: explosionParticle 0.8s ease-out forwards;
+        }
+
+        .explosion-flash {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(255, 100, 255, 0.6) 30%, transparent 70%);
+            transform: translate(-50%, -50%);
+            animation: explosionFlash 0.4s ease-out forwards;
+            border-radius: 50%;
+        }
+
+        @keyframes explosionRing {
+            0% {
+                width: 20px;
+                height: 20px;
+                opacity: 1;
+            }
+            100% {
+                width: 120px;
+                height: 120px;
+                opacity: 0;
+            }
+        }
+
+        @keyframes explosionParticle {
+            0% {
+                transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) translateY(0px);
+                opacity: 1;
+            }
+            100% {
+                transform: translate(-50%, -50%) rotate(var(--angle, 0deg)) translateY(-60px);
+                opacity: 0;
+            }
+        }
+
+        @keyframes explosionFlash {
+            0% {
+                transform: translate(-50%, -50%) scale(0.3);
+                opacity: 1;
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.2);
+                opacity: 0.6;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(0.5);
+                opacity: 0;
+            }
         }
     `;
 

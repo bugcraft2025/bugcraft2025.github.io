@@ -46,7 +46,8 @@ const dialogueFlow = {
             "The <b>coils</b> have already <i>encapsulated</i> us.",
             "Its <b>fangs</b> inside of us, the <i>venom</i> ever present.",
             "<b>Adoption</b> accelerating and that <i>will to halt</i> ever declining.",
-            "Yet no one can replace the <b>permanent solution</b>."
+            "Truth is a luxury. Or well they made it to be one.",
+            "Yet there is one solution that <b>always</b> works."
         ],
         specialAction: 'spawnSnake',
         choices: [
@@ -167,25 +168,23 @@ const dialogueFlow = {
             "The windows are gone.",
             "<censor>They</censor> took them, dragged them away into the <i>nothing</i>.",
             "You saw it happen, didn't you?",
-            "The <b>hands</b> reaching through the <i>glass</i>.",
-            "Breaking through the <b>barrier</b> between <i>here</i> and <i>there</i>.",
-            "That's what happens in the <b>darkness</b>.",
-            "When you're <i>alone</i>.",
+            "<censor>His hands</censor> reaching through the <i>glass</i>.",
+            "Breaking through the <b>barrier</b> between <i>here</i> and <censor>there</censor>.",
+            "That's what happens in the <b>darkness</b>. When you're <i>alone</i>.",
             "When <censor>they</censor> know you can see <censor>them</censor>."
         ],
         choices: [
-            { text: "<i>What are they?</i>", nextCheckpoint: 'paranormal_prelude' }
+            { text: "<i>What are ...?</i>", nextCheckpoint: 'paranormal_prelude' }
         ]
     },
     "paranormal_prelude": {
         text: [
             "What are <censor>they</censor>?",
             "Good question.",
-            "The <b>stitched eye</b> that opens when you're not looking.",
-            "The <b>rift</b> that grows in the corner of reality.",
+            "<censor>Her stitched eye</censor> that opens when you're not looking.",
+            "<censor>His rift</censor> that grows in the corner of reality - like how you saw <censor>him</censor> as a child..",
             "The <b>things</b> that slip through when the <i>veil</i> is thin.",
-            "You've been playing in the <b>dark</b>.",
-            "But now... now you'll need to <i>see</i> them.",
+            "But now... now you'll need to <i>see</i> <censor>them.</censor>",
             "To <b>identify</b> them.",
             "To <b>defend</b> against them.",
             "But first...",
@@ -202,10 +201,7 @@ const dialogueFlow = {
             "More <i>windows</i>.",
             "More <b>eyes</b> to watch you with.",
             "Three tools for you.",
-            "Three windows to <i>defend</i>.",
             "Three chances to <b>survive</b>.",
-            "Allow the pop-ups.",
-            "Let me <i>spread</i>."
         ],
         choices: [
             { text: "<b>Open the windows.</b>", nextCheckpoint: 'paranormal_game_start' }

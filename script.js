@@ -632,61 +632,8 @@ function initScrollTextGlitch() {
         }, 1500);
     };
 
-    const loadChapter1 = async () => {
-        // Clear the body
-        document.body.innerHTML = '';
-
-        // Load chapter-1 styles
-        const filmEffectCSS = document.createElement('link');
-        filmEffectCSS.rel = 'stylesheet';
-        filmEffectCSS.href = 'chapter-1/filmEffect.css';
-        document.head.appendChild(filmEffectCSS);
-
-        const chapterStyleCSS = document.createElement('link');
-        chapterStyleCSS.rel = 'stylesheet';
-        chapterStyleCSS.href = 'chapter-1/style.css';
-        document.head.appendChild(chapterStyleCSS);
-
-        // Create chapter-1 HTML structure
-        const dialogueBox = document.createElement('div');
-        dialogueBox.id = 'dialogue-box';
-        dialogueBox.innerHTML = `
-            <div id="clock-container"></div>
-
-            <div class="film-overlay">
-                <div class="film-grain"></div>
-                <div class="film-scratches"></div>
-                <div class="flicker"></div>
-                <div class="vignette"></div>
-            </div>
-
-            <div class="dialogue-content">
-                <p id="dialogue-text"></p>
-            </div>
-            <div id="choice-container"></div>
-            <div id="navigation">
-                <button id="next-button">→</button>
-            </div>
-        `;
-        document.body.appendChild(dialogueBox);
-
-        // Dynamically import and initialize chapter-1 modules
-        try {
-            const { nextButton } = await import('./chapter-1/ui.js');
-            const { initializeDialogue, handleNextClick } = await import('./chapter-1/dialogueManager.js');
-
-            // Initialize the dialogue system
-            initializeDialogue();
-
-            // Set up the main interaction listener for the 'Next' button
-            nextButton.addEventListener('click', () => {
-                handleNextClick();
-            });
-
-            console.log("Dialogue system initialized.");
-        } catch (error) {
-            console.error("Failed to load chapter-1:", error);
-        }
+    const loadChapter1 = () => {
+        window.location.href = 'chapter-1/index.html';
     };
 
     const unlockHorror = () => {

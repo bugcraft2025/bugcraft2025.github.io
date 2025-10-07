@@ -6,7 +6,7 @@ import {
     spawnEnemy,
     updateEnemyStages,
     identifyEnemy,
-    flashlightClickOnRift,
+    flashRiftsInView,
     removeEnemy,
     disableScanner,
     updateScannerStatus,
@@ -21,7 +21,7 @@ import {
     initializeGame
 } from './paranormalGame.js';
 
-import { createRiftElement } from './riftVisual.js';
+import { createRiftElement, createRiftExplosion } from './riftVisual.js';
 
 import {
     getStatusWindow,
@@ -54,6 +54,7 @@ let onGameCompleteCallback = null;
 let gameLoopInterval = null;
 let curtainHoldInterval = null;
 let handGrabWarning = null; // { windowName, startTime, warningDuration }
+let previousFlashlightState = false; // Track previous flashlight state to detect off transitions
 
 /**
  * Starts the paranormal game
@@ -110,6 +111,9 @@ function startGameLoop() {
 
         // Update enemy visuals
         updateEnemyVisuals();
+
+        // Check for flashlight turning off (flash complete)
+        checkFlashlightFlash();
 
         // Check for hand grab attack
         checkHandGrabAttack();
@@ -199,14 +203,17 @@ function eyeAttackFailed(eye) {
 }
 
 /**
- * Checks rift defense when rift reaches stage 5
+ * Checks rift defense - can be destroyed at any stage with 5 flashes
  */
 function checkRiftDefense() {
-    const riftEnemies = gameState.enemies.filter(e => e.type === 'rift' && e.stage === 5);
+    const riftEnemies = gameState.enemies.filter(e => e.type === 'rift');
 
     riftEnemies.forEach(rift => {
-        if (rift.riftClickCount >= 10) {
-            // Rift destroyed successfully
+        if (rift.riftFlashCount >= 5) {
+            // Rift destroyed successfully at any stage
+            triggerRiftExplosion(rift.id);
+
+            // Remove from game state
             removeEnemy(rift.id);
             updateGameMessage('Rift closed! Threat eliminated.');
 
@@ -216,8 +223,8 @@ function checkRiftDefense() {
                 const sh = screen.height;
                 spawnEnemy('rift', sw, sh);
             }, 10000);
-        } else if (!rift.attackedPlayer) {
-            // Rift attack!
+        } else if (rift.stage === 5 && !rift.attackedPlayer) {
+            // Rift reached full size without being destroyed - attack!
             rift.attackedPlayer = true;
             riftAttackFailed(rift);
         }
@@ -261,6 +268,40 @@ async function riftAttackFailed(rift) {
 }
 
 /**
+ * Checks for flashlight state transition (ON to OFF) and flashes rifts
+ */
+function checkFlashlightFlash() {
+    const currentFlashlightState = isFlashlightOn();
+
+    // Detect transition from ON to OFF (flash complete)
+    if (previousFlashlightState && !currentFlashlightState) {
+        const flashWin = getFlashlightWindow();
+        if (flashWin && !flashWin.closed) {
+            const flashBounds = {
+                left: flashWin.screenX,
+                top: flashWin.screenY,
+                right: flashWin.screenX + flashWin.outerWidth,
+                bottom: flashWin.screenY + flashWin.outerHeight
+            };
+
+            const flashedRifts = flashRiftsInView(flashBounds);
+
+            // Show feedback for flashed rifts
+            flashedRifts.forEach(rift => {
+                if (rift.count >= 5) {
+                    // Rift will be destroyed in checkRiftDefense
+                    updateGameMessage(`<span style="color: #00ff00;">Rift destroyed with ${rift.count} flashes!</span>`);
+                } else {
+                    updateGameMessage(`Flashing rift... ${rift.count}/5 flashes`);
+                }
+            });
+        }
+    }
+
+    previousFlashlightState = currentFlashlightState;
+}
+
+/**
  * Updates enemy visuals in finder and flashlight windows
  */
 function updateEnemyVisuals() {
@@ -294,54 +335,56 @@ function updateEnemyVisuals() {
     }
 
     // Update flashlight window (shows identified enemies when light is on)
-    if (flashWin && !flashWin.closed && isFlashlightOn()) {
+    if (flashWin && !flashWin.closed) {
         const enemyContainer = flashWin.document.getElementById('enemy-container');
         if (enemyContainer) {
-            enemyContainer.innerHTML = '';
+            if (isFlashlightOn()) {
+                // Flashlight is on - show enemies
+                enemyContainer.innerHTML = '';
 
-            const flashBounds = {
-                left: flashWin.screenX,
-                top: flashWin.screenY,
-                right: flashWin.screenX + flashWin.outerWidth,
-                bottom: flashWin.screenY + flashWin.outerHeight
-            };
+                const flashBounds = {
+                    left: flashWin.screenX,
+                    top: flashWin.screenY,
+                    right: flashWin.screenX + flashWin.outerWidth,
+                    bottom: flashWin.screenY + flashWin.outerHeight
+                };
 
-            gameState.enemies.forEach(enemy => {
-                if (!enemy.identified) return;
+                gameState.enemies.forEach(enemy => {
+                    if (!enemy.identified) return;
 
-                const inView = enemy.x >= flashBounds.left && enemy.x <= flashBounds.right &&
-                              enemy.y >= flashBounds.top && enemy.y <= flashBounds.bottom;
+                    const inView = enemy.x >= flashBounds.left && enemy.x <= flashBounds.right &&
+                                  enemy.y >= flashBounds.top && enemy.y <= flashBounds.bottom;
 
-                if (inView) {
-                    let sprite;
+                    if (inView) {
+                        let sprite;
 
-                    if (enemy.type === 'eye') {
-                        // Use image sprite for eye
-                        sprite = flashWin.document.createElement('img');
-                        sprite.src = `./images/${enemyConfig[enemy.type].sprites[enemy.stage - 1]}`;
-                    } else if (enemy.type === 'rift') {
-                        // Use CSS/JS visual for rift
-                        sprite = createRiftElement(enemy.stage);
-                    }
-
-                    sprite.className = 'enemy-sprite visible';
-                    sprite.style.left = (enemy.x - flashBounds.left - 40) + 'px'; // Center the element
-                    sprite.style.top = (enemy.y - flashBounds.top - 40) + 'px';
-                    sprite.dataset.id = enemy.id;
-                    sprite.onclick = () => {
-                        if (enemy.type === 'rift') {
-                            window.paranormalFlashlightClickEnemy(enemy.id);
+                        if (enemy.type === 'eye') {
+                            // Use image sprite for eye
+                            sprite = flashWin.document.createElement('img');
+                            sprite.src = `./images/${enemyConfig[enemy.type].sprites[enemy.stage - 1]}`;
+                        } else if (enemy.type === 'rift') {
+                            // Use CSS/JS visual for rift
+                            sprite = createRiftElement(enemy.stage);
                         }
-                    };
-                    enemyContainer.appendChild(sprite);
-                }
-            });
+
+                        sprite.className = 'enemy-sprite visible identified';
+                        sprite.style.left = (enemy.x - flashBounds.left - 40) + 'px'; // Center the element
+                        sprite.style.top = (enemy.y - flashBounds.top - 40) + 'px';
+                        sprite.dataset.id = enemy.id;
+                        enemyContainer.appendChild(sprite);
+                    }
+                });
+            } else {
+                // Flashlight is off - clear all sprites (return to pitch black)
+                enemyContainer.innerHTML = '';
+            }
         }
     }
 }
 
 /**
  * Creates edge arrow pointing to enemy in finder window
+ * Uses omnidirectional sonar-style display on radar perimeter
  */
 function createEdgeArrow(win, enemy, bounds) {
     const arrowEl = win.document.createElement('div');
@@ -350,36 +393,60 @@ function createEdgeArrow(win, enemy, bounds) {
     const centerX = bounds.left + bounds.width / 2;
     const centerY = bounds.top + bounds.height / 2;
 
+    // Calculate angle from center to enemy
     const dx = enemy.x - centerX;
     const dy = enemy.y - centerY;
+    const angle = Math.atan2(dy, dx);
 
-    if (Math.abs(dx) > Math.abs(dy)) {
-        if (dx < 0) {
-            arrowEl.classList.add('left');
-            arrowEl.style.left = '10px';
-            arrowEl.style.top = '50%';
-            arrowEl.style.transform = 'translateY(-50%)';
-        } else {
-            arrowEl.classList.add('right');
-            arrowEl.style.right = '10px';
-            arrowEl.style.top = '50%';
-            arrowEl.style.transform = 'translateY(-50%)';
-        }
-    } else {
-        if (dy < 0) {
-            arrowEl.classList.add('top');
-            arrowEl.style.top = '10px';
-            arrowEl.style.left = '50%';
-            arrowEl.style.transform = 'translateX(-50%)';
-        } else {
-            arrowEl.classList.add('bottom');
-            arrowEl.style.bottom = '10px';
-            arrowEl.style.left = '50%';
-            arrowEl.style.transform = 'translateX(-50%)';
-        }
-    }
+    // Radar circle radius (125px from center, matching the 250px diameter radar)
+    const radarRadius = 125;
+
+    // Position arrow on the radar circle perimeter
+    const arrowX = radarRadius * Math.cos(angle);
+    const arrowY = radarRadius * Math.sin(angle);
+
+    // Convert angle to degrees and rotate arrow to point toward enemy direction
+    const angleDeg = (angle * 180 / Math.PI) + 90; // +90 to align with CSS arrow shape
+
+    // Position relative to radar center (which is at 50% 50% of window)
+    arrowEl.style.left = `calc(50% + ${arrowX}px)`;
+    arrowEl.style.top = `calc(50% + ${arrowY}px)`;
+    arrowEl.style.transform = `translate(-50%, -50%) rotate(${angleDeg}deg)`;
 
     win.document.getElementById('edge-arrows').appendChild(arrowEl);
+}
+
+/**
+ * Triggers rift explosion animation and removes sprite immediately
+ */
+function triggerRiftExplosion(riftId) {
+    const flashWin = getFlashlightWindow();
+    if (!flashWin || flashWin.closed) return;
+
+    const enemyContainer = flashWin.document.getElementById('enemy-container');
+    if (!enemyContainer) return;
+
+    // Find the rift sprite
+    const riftSprite = enemyContainer.querySelector(`[data-id="${riftId}"]`);
+    if (!riftSprite) return;
+
+    // Get position of the rift sprite
+    const riftX = riftSprite.style.left;
+    const riftY = riftSprite.style.top;
+
+    // Remove the rift sprite immediately
+    riftSprite.remove();
+
+    // Create explosion at the same position
+    const explosion = createRiftExplosion();
+    explosion.style.left = riftX;
+    explosion.style.top = riftY;
+    enemyContainer.appendChild(explosion);
+
+    // Remove explosion after animation completes (800ms)
+    setTimeout(() => {
+        explosion.remove();
+    }, 800);
 }
 
 /**
@@ -564,19 +631,6 @@ window.paranormalFlashlightDown = function() {
 
 window.paranormalFlashlightUp = function() {
     setFlashlightState(false);
-};
-
-window.paranormalFlashlightClickEnemy = function(enemyId) {
-    const result = flashlightClickOnRift(enemyId);
-
-    if (result === 'destroyed') {
-        updateGameMessage('<span style="color: #00ff00;">Rift destroyed!</span>');
-    } else if (result === 'hit') {
-        const enemy = gameState.enemies.find(e => e.id === enemyId);
-        if (enemy) {
-            updateGameMessage(`Attacking rift... ${enemy.riftClickCount}/10 hits`);
-        }
-    }
 };
 
 window.paranormalCurtainDown = function() {
