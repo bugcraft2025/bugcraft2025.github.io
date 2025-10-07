@@ -145,26 +145,29 @@ function transformDialogueToStatusWindow() {
             <div id="scanner-status" style="margin: 10px 0; padding: 8px; background: rgba(0, 255, 0, 0.2); border: 2px solid #00ff00; text-align: center; font-size: 14px; transition: all 0.3s;">
                 SCANNER: ONLINE
             </div>
-            <div id="game-message" style="margin-top: 15px; padding: 10px; background: rgba(51, 51, 51, 0.8); border-left: 3px solid #ff0000; font-size: 13px; line-height: 1.4; max-height: 200px; overflow-y: auto;">
+            <div id="respawn-buttons" style="display: flex; gap: 8px; justify-content: center; margin: 10px 0;">
+                <button id="respawn-finder" class="respawn-button" onclick="window.respawnFinderWindow()" style="background: rgba(100, 100, 255, 0.3); color: #fff; padding: 8px 16px; border: 2px solid #6666ff; font-size: 18px; cursor: pointer; transition: all 0.3s; display: none; flex: 1; max-width: 100px;">
+                    <span style="display: block; font-size: 20px;">🔍</span>
+                    <span class="cooldown-timer" style="font-size: 10px; display: block;">0s</span>
+                </button>
+                <button id="respawn-flashlight" class="respawn-button" onclick="window.respawnFlashlightWindow()" style="background: rgba(255, 255, 100, 0.3); color: #000; padding: 8px 16px; border: 2px solid #ffff66; font-size: 18px; cursor: pointer; transition: all 0.3s; display: none; flex: 1; max-width: 100px;">
+                    <span style="display: block; font-size: 20px;">🔦</span>
+                    <span class="cooldown-timer" style="font-size: 10px; display: block;">0s</span>
+                </button>
+                <button id="respawn-curtain" class="respawn-button" onclick="window.respawnCurtainWindow()" style="background: rgba(150, 75, 0, 0.3); color: #fff; padding: 8px 16px; border: 2px solid #996633; font-size: 18px; cursor: pointer; transition: all 0.3s; display: none; flex: 1; max-width: 100px;">
+                    <span style="display: block; font-size: 20px;">🪟</span>
+                    <span class="cooldown-timer" style="font-size: 10px; display: block;">0s</span>
+                </button>
+            </div>
+            <div id="game-message" style="margin-top: 10px; padding: 10px; background: rgba(51, 51, 51, 0.8); border-left: 3px solid #ff0000; font-size: 13px; line-height: 1.4; max-height: 200px; overflow-y: auto;">
                 <div class="log-entry">Use the Supernatural Finder to scan for threats...</div>
             </div>
         `;
     }
 
-    // Add respawn buttons to choice container
+    // Hide the choice container since we moved buttons into dialogueText
     if (choiceContainer) {
-        choiceContainer.innerHTML = `
-            <button id="respawn-finder" class="choice-button" onclick="window.respawnFinderWindow()" style="background: rgba(100, 100, 255, 0.5); color: #fff; margin-top: 8px; padding: 10px 20px; border: 2px solid #6666ff; font-size: 12px; display: none;">
-                RESPAWN FINDER (<span class="cooldown-timer">0</span>s)
-            </button>
-            <button id="respawn-flashlight" class="choice-button" onclick="window.respawnFlashlightWindow()" style="background: rgba(255, 255, 100, 0.5); color: #000; margin-top: 8px; padding: 10px 20px; border: 2px solid #ffff66; font-size: 12px; display: none;">
-                RESPAWN FLASHLIGHT (<span class="cooldown-timer">0</span>s)
-            </button>
-            <button id="respawn-curtain" class="choice-button" onclick="window.respawnCurtainWindow()" style="background: rgba(150, 75, 0, 0.5); color: #fff; margin-top: 8px; padding: 10px 20px; border: 2px solid #996633; font-size: 12px; display: none;">
-                RESPAWN CURTAIN (<span class="cooldown-timer">0</span>s)
-            </button>
-        `;
-        choiceContainer.style.display = 'flex';
+        choiceContainer.style.display = 'none';
     }
 
     // Add styles
@@ -631,10 +634,14 @@ export function setFlashlightState(isOn) {
 
 /**
  * Marks a window as destroyed
+ * Imports canRespawnWindow to check for active cooldown
  */
 export function markWindowDestroyed(windowName) {
     destroyedWindows.add(windowName);
     showRespawnButton(windowName);
+
+    // Note: If there's an active cooldown, updateRespawnButtons() in game loop
+    // will update the button state to show timer and disable it
 }
 
 /**
@@ -666,24 +673,34 @@ export function respawnWindow(windowName) {
 }
 
 /**
- * Shows respawn button for a window
+ * Shows respawn button for a window (enabled, no cooldown)
  */
 function showRespawnButton(windowName) {
     const statusWin = getStatusWindow();
     if (statusWin && statusWin.document) {
         const button = statusWin.document.getElementById(`respawn-${windowName}`);
-        if (button) button.style.display = 'block';
+        if (button) {
+            button.style.display = 'flex';
+            button.style.flexDirection = 'column';
+            button.style.alignItems = 'center';
+            button.disabled = false;
+            button.style.opacity = '1';
+            const timerSpan = button.querySelector('.cooldown-timer');
+            if (timerSpan) timerSpan.textContent = 'READY';
+        }
     }
 }
 
 /**
- * Hides respawn button for a window
+ * Hides respawn button for a window (window exists)
  */
 function hideRespawnButton(windowName) {
     const statusWin = getStatusWindow();
     if (statusWin && statusWin.document) {
         const button = statusWin.document.getElementById(`respawn-${windowName}`);
-        if (button) button.style.display = 'none';
+        if (button) {
+            button.style.display = 'none';
+        }
     }
 }
 
@@ -700,13 +717,16 @@ export function updateRespawnButtons(cooldowns) {
             const timerSpan = button.querySelector('.cooldown-timer');
             const remaining = cooldowns[windowName] || 0;
 
-            if (timerSpan) timerSpan.textContent = remaining;
-            button.disabled = remaining > 0;
-
             if (remaining > 0) {
+                if (timerSpan) timerSpan.textContent = remaining + 's';
+                button.disabled = true;
                 button.style.opacity = '0.5';
+                button.style.cursor = 'not-allowed';
             } else {
+                if (timerSpan) timerSpan.textContent = 'READY';
+                button.disabled = false;
                 button.style.opacity = '1';
+                button.style.cursor = 'pointer';
             }
         }
     });
@@ -769,11 +789,11 @@ export function triggerRainbowFlash() {
         flashCount++;
         if (flashCount >= maxFlashes) {
             clearInterval(flashInterval);
-            // Reset backgrounds
+            // Reset backgrounds by removing inline styles so CSS classes work again
             windows.forEach((win, idx) => {
                 if (win && !win.closed && win.document && win.document.body) {
                     if (idx === 0) win.document.body.style.background = 'linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%)';
-                    else if (idx === 1) win.document.body.style.background = '#000000';
+                    else if (idx === 1) win.document.body.style.background = ''; // Clear inline style to allow CSS classes to work
                     else if (idx === 2) win.document.body.style.background = '#000000';
                 }
             });

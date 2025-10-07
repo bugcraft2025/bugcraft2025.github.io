@@ -9,7 +9,22 @@ export let gameState = {
     windowRespawnCooldowns: {}, // {windowName: respawnAvailableTime}
     gameActive: false,
     gameStartTime: 0,
-    nextHandGrabTime: 0
+    nextHandGrabTime: 0,
+    tutorialMode: true,
+    tutorialRiftDefeated: false,
+    tutorialEyeSpawned: false,
+    postTutorialStartTime: 0, // When main game starts after tutorial
+    spawnSchedule: [
+        { time: 5000, spawns: ['rift'] },
+        { time: 20000, spawns: ['rift'] },
+        { time: 30000, spawns: ['rift'] },
+        { time: 40000, spawns: ['eye'] },
+        { time: 50000, spawns: ['rift'] },
+        { time: 60000, spawns: ['eye'] },
+        { time: 75000, spawns: ['eye', 'rift'] },
+        { time: 100000, spawns: ['eye', 'rift', 'rift'] }
+    ],
+    spawnedScheduleIndexes: [] // Track which scheduled spawns have already occurred
 };
 
 /**
@@ -218,5 +233,10 @@ export function initializeGame() {
     gameState.gameActive = true;
     gameState.gameStartTime = Date.now();
     gameState.nextHandGrabTime = 0;
+    gameState.tutorialMode = true;
+    gameState.tutorialRiftDefeated = false;
+    gameState.tutorialEyeSpawned = false;
+    gameState.postTutorialStartTime = 0;
+    gameState.spawnedScheduleIndexes = [];
     scheduleNextHandGrab();
 }

@@ -70,19 +70,22 @@ export function startParanormalGame(onComplete) {
         updateHPDisplay(gameState.playerHP, gameState.maxHP);
         updateScannerDisplay(false);
 
-        // Spawn initial enemies after 5 seconds
+        // Tutorial: Spawn only rift first
         setTimeout(() => {
             const sw = screen.width;
             const sh = screen.height;
 
-            spawnEnemy('eye', sw, sh);
             spawnEnemy('rift', sw, sh);
 
-            updateGameMessage('Threats detected! Use the Finder to scan for them.');
+            // Tutorial messages
+            updateGameMessage('<span style="color: #00ffff; font-weight: bold;">TUTORIAL: A rift has appeared!</span>');
+            setTimeout(() => updateGameMessage('<span style="color: #00ffff;">Step 1: Use the Supernatural Finder (🔍) to scan for the threat.</span>'), 1000);
+            setTimeout(() => updateGameMessage('<span style="color: #00ffff;">Step 2: Once identified, use the Flashlight (🔦) to see it.</span>'), 2000);
+            setTimeout(() => updateGameMessage('<span style="color: #00ffff;">Step 3: Flash the rift 5 times to close it before it reaches full size!</span>'), 3000);
 
             // Start game loop
             startGameLoop();
-        }, 5000);
+        }, 3000);
     }, 500);
 }
 
@@ -95,6 +98,9 @@ function startGameLoop() {
             stopGameLoop();
             return;
         }
+
+        // Check and spawn enemies according to schedule
+        checkScheduledSpawns();
 
         // Update enemy stages
         updateEnemyStages();
@@ -121,9 +127,11 @@ function startGameLoop() {
         // Update respawn cooldowns
         updateRespawnCooldownDisplays();
 
-        // Check win condition (survive for 2 minutes)
-        if (Date.now() - gameState.gameStartTime >= 120000) {
-            gameWon();
+        // Check win condition (survive for 2 minutes) - only after tutorial
+        if (!gameState.tutorialMode && gameState.postTutorialStartTime > 0) {
+            if (Date.now() - gameState.postTutorialStartTime >= 120000) {
+                gameWon();
+            }
         }
 
         // Check lose condition
@@ -141,6 +149,33 @@ function stopGameLoop() {
         clearInterval(gameLoopInterval);
         gameLoopInterval = null;
     }
+}
+
+/**
+ * Checks and spawns enemies according to the schedule (only after tutorial)
+ */
+function checkScheduledSpawns() {
+    // Only spawn from schedule after tutorial is complete
+    if (gameState.tutorialMode || gameState.postTutorialStartTime === 0) return;
+
+    const elapsed = Date.now() - gameState.postTutorialStartTime;
+    const sw = screen.width;
+    const sh = screen.height;
+
+    gameState.spawnSchedule.forEach((schedule, index) => {
+        if (elapsed >= schedule.time && !gameState.spawnedScheduleIndexes.includes(index)) {
+            // Time to spawn!
+            gameState.spawnedScheduleIndexes.push(index);
+
+            schedule.spawns.forEach(enemyType => {
+                spawnEnemy(enemyType, sw, sh);
+            });
+
+            // Log spawn message
+            const spawnText = schedule.spawns.join(' and ');
+            updateGameMessage(`<span style="color: #ff9900;">New threat detected: ${spawnText}</span>`);
+        }
+    });
 }
 
 /**
@@ -170,7 +205,17 @@ function checkEyeDefense() {
         if (eyeCovered && isCurtainClosed()) {
             // Successfully defended!
             updateGameMessage('Eye neutralized! Well done.');
-            resetEnemy(eye.id);
+
+            // Remove the eye
+            removeEnemy(eye.id);
+
+            // Tutorial mode: First eye defeated - start normal gameplay with schedule
+            if (gameState.tutorialMode && gameState.tutorialEyeSpawned) {
+                gameState.tutorialMode = false;
+                gameState.postTutorialStartTime = Date.now(); // Start the 2-minute timer
+
+                updateGameMessage('<span style="color: #00ff00; font-weight: bold;">Tutorial complete! Survive for 2 minutes!</span>');
+            }
         } else if (!eye.attackedPlayer) {
             // Eye attack!
             eye.attackedPlayer = true;
@@ -217,12 +262,25 @@ function checkRiftDefense() {
             removeEnemy(rift.id);
             updateGameMessage('Rift closed! Threat eliminated.');
 
-            // Spawn a new rift after delay
-            setTimeout(() => {
-                const sw = screen.width;
-                const sh = screen.height;
-                spawnEnemy('rift', sw, sh);
-            }, 10000);
+            // Tutorial mode: First rift defeated
+            if (gameState.tutorialMode && !gameState.tutorialRiftDefeated) {
+                gameState.tutorialRiftDefeated = true;
+
+                updateGameMessage('<span style="color: #00ff00; font-weight: bold;">TUTORIAL: Well done! You closed the rift!</span>');
+
+                // Spawn eye after 3 seconds
+                setTimeout(() => {
+                    const sw = screen.width;
+                    const sh = screen.height;
+                    spawnEnemy('eye', sw, sh);
+                    gameState.tutorialEyeSpawned = true;
+
+                    updateGameMessage('<span style="color: #ffff00; font-weight: bold;">TUTORIAL: A new threat - an Eye has appeared!</span>');
+                    setTimeout(() => updateGameMessage('<span style="color: #ffff00;">Step 1: Use the Finder to locate and identify the Eye.</span>'), 1000);
+                    setTimeout(() => updateGameMessage('<span style="color: #ffff00;">Step 2: When the Eye fully opens, position the Curtain (🪟) over it.</span>'), 2000);
+                    setTimeout(() => updateGameMessage('<span style="color: #ffff00;">Step 3: Hold the CLOSE button to cover the Eye before it attacks!</span>'), 3000);
+                }, 3000);
+            }
         } else if (rift.stage === 5 && !rift.attackedPlayer) {
             // Rift reached full size without being destroyed - attack!
             rift.attackedPlayer = true;
@@ -255,16 +313,11 @@ async function riftAttackFailed(rift) {
     for (const window of toDestroy) {
         await grabAndDestroyWindow(window.ref, 500);
         markWindowDestroyed(window.name);
-        setWindowRespawnCooldown(window.name, 30000); // 30 second cooldown
+        // Cooldown will start when player clicks respawn button
     }
 
-    // Remove rift and spawn new one
+    // Remove rift (no automatic respawn - handled by schedule)
     removeEnemy(rift.id);
-    setTimeout(() => {
-        const sw = screen.width;
-        const sh = screen.height;
-        spawnEnemy('rift', sw, sh);
-    }, 5000);
 }
 
 /**
@@ -453,6 +506,9 @@ function triggerRiftExplosion(riftId) {
  * Checks and triggers hand grab attacks
  */
 function checkHandGrabAttack() {
+    // Don't do hand grabs during tutorial
+    if (gameState.tutorialMode) return;
+
     // If warning is active, check if time expired
     if (handGrabWarning) {
         const elapsed = Date.now() - handGrabWarning.startTime;
@@ -538,7 +594,7 @@ async function destroyWindowFromHandGrab(windowName) {
 
     await grabAndDestroyWindow(win, 100);
     markWindowDestroyed(windowName);
-    setWindowRespawnCooldown(windowName, 30000);
+    // Cooldown will start when player clicks respawn button
 }
 
 /**
@@ -661,6 +717,7 @@ window.paranormalCurtainUp = function() {
 window.respawnFinderWindow = function() {
     if (canRespawnWindow('finder')) {
         respawnWindow('finder');
+        setWindowRespawnCooldown('finder', 30000); // 30 second cooldown starts NOW
         updateGameMessage('Finder respawned.');
     }
 };
@@ -668,6 +725,7 @@ window.respawnFinderWindow = function() {
 window.respawnFlashlightWindow = function() {
     if (canRespawnWindow('flashlight')) {
         respawnWindow('flashlight');
+        setWindowRespawnCooldown('flashlight', 30000); // 30 second cooldown starts NOW
         updateGameMessage('Flashlight respawned.');
     }
 };
@@ -675,6 +733,7 @@ window.respawnFlashlightWindow = function() {
 window.respawnCurtainWindow = function() {
     if (canRespawnWindow('curtain')) {
         respawnWindow('curtain');
+        setWindowRespawnCooldown('curtain', 30000); // 30 second cooldown starts NOW
         updateGameMessage('Curtain respawned.');
     }
 };
