@@ -109,19 +109,17 @@ export function triggerDialogueBreak(breakData = {}) {
     dialogueBox.classList.add('dialogue-hole');
 
     let escapedWindow = null;
-    let allowPopup = false;
 
+    // Try to open popup directly - browser will request permanent permission if blocked
     try {
-        allowPopup = window.confirm(permissionPrompt);
-    } catch (error) {
-        console.warn('Unable to prompt for popup permission:', error);
-    }
-
-    if (allowPopup) {
         escapedWindow = window.open('', 'dialogueEscape', 'width=540,height=420');
-        if (!escapedWindow) {
-            console.warn('Popup blocked despite permission.');
+        if (!escapedWindow || escapedWindow.closed || typeof escapedWindow.closed === 'undefined') {
+            console.warn('Popup was blocked by browser.');
+            escapedWindow = null;
         }
+    } catch (error) {
+        console.warn('Unable to open popup:', error);
+        escapedWindow = null;
     }
 
     // Start the escape animation on the next frame for smoothness
@@ -143,8 +141,8 @@ export function triggerDialogueBreak(breakData = {}) {
         } catch (error) {
             console.error('Failed to initialise escaped dialogue window:', error);
         }
-    } else if (allowPopup) {
-        console.info('Showing fallback message because popup was blocked.');
+    } else {
+        console.info('Popup was blocked - showing hint to allow popups.');
         showPopupBlockedHint(blockedMessage);
     }
 }
