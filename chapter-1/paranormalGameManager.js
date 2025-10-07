@@ -161,6 +161,9 @@ function startGameLoop() {
         // Check for hand grab attack
         checkHandGrabAttack();
 
+        // Check for manual window closures
+        checkManualWindowClosures();
+
         // Update respawn cooldowns
         updateRespawnCooldownDisplays();
 
@@ -642,6 +645,24 @@ async function destroyWindowFromHandGrab(windowName) {
     await grabAndDestroyWindow(win, 100);
     markWindowDestroyed(windowName);
     // Cooldown will start when player clicks respawn button
+}
+
+/**
+ * Checks if player manually closed any windows and marks them as destroyed
+ */
+function checkManualWindowClosures() {
+    const windows = [
+        { name: 'finder', ref: getFinderWindow() },
+        { name: 'flashlight', ref: getFlashlightWindow() },
+        { name: 'curtain', ref: getCurtainWindow() }
+    ];
+
+    windows.forEach(window => {
+        // If window reference exists but is closed, mark it as destroyed
+        if (window.ref && window.ref.closed) {
+            markWindowDestroyed(window.name);
+        }
+    });
 }
 
 /**
