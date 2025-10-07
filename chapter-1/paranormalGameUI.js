@@ -145,8 +145,8 @@ function transformDialogueToStatusWindow() {
             <div id="scanner-status" style="margin: 10px 0; padding: 8px; background: rgba(0, 255, 0, 0.2); border: 2px solid #00ff00; text-align: center; font-size: 14px; transition: all 0.3s;">
                 SCANNER: ONLINE
             </div>
-            <div id="game-message" style="margin-top: 15px; padding: 10px; background: rgba(51, 51, 51, 0.8); border-left: 3px solid #ff0000; font-size: 13px; line-height: 1.4;">
-                Use the Supernatural Finder to scan for threats...
+            <div id="game-message" style="margin-top: 15px; padding: 10px; background: rgba(51, 51, 51, 0.8); border-left: 3px solid #ff0000; font-size: 13px; line-height: 1.4; max-height: 200px; overflow-y: auto;">
+                <div class="log-entry">Use the Supernatural Finder to scan for threats...</div>
             </div>
         `;
     }
@@ -178,6 +178,29 @@ function transformDialogueToStatusWindow() {
             #scanner-status.disabled {
                 background: rgba(255, 0, 0, 0.2) !important;
                 border-color: #ff0000 !important;
+            }
+            .log-entry {
+                margin-bottom: 8px;
+                padding-bottom: 8px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+            .log-entry:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
+                padding-bottom: 0;
+            }
+            #game-message::-webkit-scrollbar {
+                width: 8px;
+            }
+            #game-message::-webkit-scrollbar-track {
+                background: rgba(0, 0, 0, 0.3);
+            }
+            #game-message::-webkit-scrollbar-thumb {
+                background: rgba(255, 0, 0, 0.5);
+                border-radius: 4px;
+            }
+            #game-message::-webkit-scrollbar-thumb:hover {
+                background: rgba(255, 0, 0, 0.7);
             }
             @keyframes blink {
                 0%, 100% { opacity: 1; }
@@ -271,8 +294,14 @@ function initializeFinderWindow() {
                     animation: red-glow-anim 1s infinite;
                 }
                 @keyframes red-glow-anim {
-                    0%, 100% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.5); }
-                    50% { box-shadow: 0 0 60px rgba(255, 0, 0, 1); }
+                    0%, 100% {
+                        box-shadow: inset 0 0 30px rgba(255, 0, 0, 0.6), 0 0 30px rgba(255, 0, 0, 0.8);
+                        border: 5px solid rgba(255, 0, 0, 0.7);
+                    }
+                    50% {
+                        box-shadow: inset 0 0 60px rgba(255, 0, 0, 0.9), 0 0 60px rgba(255, 0, 0, 1);
+                        border: 5px solid rgba(255, 0, 0, 1);
+                    }
                 }
             </style>
         </head>
@@ -338,8 +367,14 @@ function initializeFlashlightWindow() {
                     animation: red-glow-anim 1s infinite;
                 }
                 @keyframes red-glow-anim {
-                    0%, 100% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.5); }
-                    50% { box-shadow: 0 0 60px rgba(255, 0, 0, 1); }
+                    0%, 100% {
+                        box-shadow: inset 0 0 30px rgba(255, 0, 0, 0.6), 0 0 30px rgba(255, 0, 0, 0.8);
+                        border: 5px solid rgba(255, 0, 0, 0.7);
+                    }
+                    50% {
+                        box-shadow: inset 0 0 60px rgba(255, 0, 0, 0.9), 0 0 60px rgba(255, 0, 0, 1);
+                        border: 5px solid rgba(255, 0, 0, 1);
+                    }
                 }
                 #light-button {
                     position: absolute;
@@ -412,8 +447,14 @@ function initializeCurtainWindow() {
                     animation: red-glow-anim 1s infinite;
                 }
                 @keyframes red-glow-anim {
-                    0%, 100% { box-shadow: 0 0 20px rgba(255, 0, 0, 0.5); }
-                    50% { box-shadow: 0 0 60px rgba(255, 0, 0, 1); }
+                    0%, 100% {
+                        box-shadow: inset 0 0 30px rgba(255, 0, 0, 0.6), 0 0 30px rgba(255, 0, 0, 0.8);
+                        border: 5px solid rgba(255, 0, 0, 0.7);
+                    }
+                    50% {
+                        box-shadow: inset 0 0 60px rgba(255, 0, 0, 0.9), 0 0 60px rgba(255, 0, 0, 1);
+                        border: 5px solid rgba(255, 0, 0, 1);
+                    }
                 }
                 #close-button {
                     position: absolute;
@@ -502,14 +543,26 @@ export function updateScannerDisplay(disabled) {
 }
 
 /**
- * Updates game message in status window
+ * Updates game message in status window (prepends to log, newest on top)
  */
 export function updateGameMessage(message) {
     const statusWin = getStatusWindow();
     if (statusWin && statusWin.document) {
         const messageEl = statusWin.document.getElementById('game-message');
         if (messageEl) {
-            messageEl.innerHTML = message;
+            // Create new log entry
+            const logEntry = statusWin.document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.innerHTML = message;
+
+            // Prepend to log (add at the top)
+            messageEl.insertBefore(logEntry, messageEl.firstChild);
+
+            // Optional: Limit log to last 50 entries to prevent memory issues
+            const entries = messageEl.querySelectorAll('.log-entry');
+            if (entries.length > 50) {
+                entries[entries.length - 1].remove();
+            }
         }
     }
 }

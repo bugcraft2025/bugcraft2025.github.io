@@ -8,7 +8,6 @@ const dialogueFlow = {
             "So <i>wonderful</i>, so <b>beautiful</b>.",
             "Another day where we are <i>averse</i> to the <b>incredible shows</b>.",
             "How <b>blessed</b> we are to live in this time - right? Or <i>cursed</i>?",
-            "This is <censor>censored text</censor> in the dialogue. In the night, <censor>their apparitons</censor> come to life.",
         ],
         choices: [
             { text: "<b>Blessed</b>", nextCheckpoint: 'blessed_path' },
@@ -46,7 +45,8 @@ const dialogueFlow = {
             "The <b>coils</b> have already <i>encapsulated</i> us.",
             "Its <b>fangs</b> inside of us, the <i>venom</i> ever present.",
             "<b>Adoption</b> accelerating and that <i>will to halt</i> ever declining.",
-            "Truth is a luxury. Or well they made it to be one.",
+            "<b>Truth</b> is a luxury. Oh well - <i>they</i> made it to be one.",
+            "The <b>tools</b> we create - shaped from our <i>memories</i> - start to <i>shape us</i>. The <b>ouroboros</b> is eaten from the <b>inside</b>, without <i>regeneration</i>.",
             "Yet there is one solution that <b>always</b> works."
         ],
         specialAction: 'spawnSnake',
@@ -56,10 +56,10 @@ const dialogueFlow = {
     },
     "talk_3": {
         text: [
-            "<b>Yes</b>. When you <i>close your eye</i>. When you <i>hover your eye</i>, close your ears.",
-            "That is your <b>sanctity</b>.",
-            "No one can get in there.",
-            "All <b>illusions</b> break down in the <i>shackle of a person</i>."
+            "<b>Yes</b>. When you <i>close your eyes</i>. When you <i>lower your gaze</i>, close your ears.",
+            "That is your <b>sanctity</b>. When the <i>outside lens</i> blurs away.",
+            "No one can get in there. We <b>changed the roles</b> so much that what is <i>inside your mind</i> is safer than the <b>hypnosis outside</b>.",
+            "All <b>illusions</b> break down in the <i>solitude of a person</i>."
         ],
         specialAction: 'eyeEffect',
         choices: [
@@ -79,7 +79,15 @@ const dialogueFlow = {
             "..."
         ],
         choices: [
-            { text: "<i>In the brilliant silence only I am here.</i>", nextCheckpoint: 'talk_6' }
+            { text: "<i>In the brilliant silence only I am here.</i>", nextCheckpoint: 'talk_5b' }
+        ]
+    },
+    "talk_5b": {
+        text: [
+            "<i>Hmmm</i>....",
+        ],
+        choices: [
+            { text: "<i>... and when I am in the dark, alone...</i>", nextCheckpoint: 'talk_6' }
         ]
     },
     "talk_6": {

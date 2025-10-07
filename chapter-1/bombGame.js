@@ -27,8 +27,8 @@ export const colorSchemes = {
         bodyBg: '#222'
     },
     1: { // First darkening (levels 5-8)
-        redBg: 'rgba(191, 38, 38, 0.3)',
-        blueBg: 'rgba(38, 38, 191, 0.3)',
+        redBg: 'rgba(120, 20, 20, 0.5)',
+        blueBg: 'rgba(20, 20, 120, 0.5)',
         blueBomb: '#0066bb',
         blueBombBorder: '#004488',
         blueBombShadow: '#0066bb',
@@ -39,8 +39,8 @@ export const colorSchemes = {
         bodyBg: '#1a1a1a'
     },
     2: { // Second darkening (levels 9-12)
-        redBg: 'rgba(128, 25, 25, 0.3)',
-        blueBg: 'rgba(25, 25, 128, 0.3)',
+        redBg: 'rgba(60, 10, 10, 0.7)',
+        blueBg: 'rgba(10, 10, 60, 0.7)',
         blueBomb: '#004488',
         blueBombBorder: '#002244',
         blueBombShadow: '#004488',
