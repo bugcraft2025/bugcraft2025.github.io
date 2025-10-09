@@ -13,14 +13,25 @@ export function grabAndDestroyWindow(targetWindow, delay = 1000) {
             return;
         }
 
+        // Play screamthingy at low volume
+        const screamAudio = new Audio('./media/screamthingy.ogg');
+        screamAudio.volume = 0.2;
+        screamAudio.play().catch(e => console.warn('Scream audio blocked:', e));
+
         setTimeout(() => {
-            // Determine which side the window is on and grab from opposite side (longest travel)
-            // If window is on left side, grab from right; if on right side, grab from left
+            // Determine which side the window is on and grab from opposite side
             const screenMiddle = screen.width / 2;
             const windowX = targetWindow.screenX;
             const fromLeft = windowX >= screenMiddle;
 
-            injectGrabSequence(targetWindow, fromLeft, resolve);
+            // Wrap resolve to stop scream audio when sequence completes
+            const wrappedResolve = () => {
+                screamAudio.pause();
+                screamAudio.currentTime = 0;
+                resolve();
+            };
+
+            injectGrabSequence(targetWindow, fromLeft, wrappedResolve);
         }, delay);
     });
 }
@@ -42,13 +53,13 @@ function injectGrabSequence(win, fromLeft, onComplete) {
     style.textContent = `
         .horror-hand {
             position: fixed;
-            width: 500px;
-            height: auto;
+            width: 895px;
+            height: 664px;
             pointer-events: none;
             z-index: 999995;
-            transform-origin: center;
-            opacity: 0;
-            transition: left 1.2s ease-out, right 1.2s ease-out, opacity 0.3s;
+            transform-origin: center center;
+            opacity: 1;
+            transition: none;
         }
 
         .glass-shard {
@@ -75,74 +86,92 @@ function injectGrabSequence(win, fromLeft, onComplete) {
     // Create hand element
     const hand = win.document.createElement('img');
     hand.className = 'horror-hand';
-    // Use chapter-1/images path since hand sprites are in a different location
     hand.src = '../chapter-1/images/hand1.png';
     hand.onerror = function() {
-        // Fallback: try alternate paths
         this.src = './chapter-1/images/hand1.png';
-        this.onerror = function() {
-            console.warn('Hand sprite not found, using placeholder');
-            // Create a simple CSS-based hand as fallback
-            this.style.width = '200px';
-            this.style.height = '200px';
-            this.style.background = 'radial-gradient(circle, #8B4513 60%, transparent 60%)';
-            this.style.borderRadius = '50%';
-        };
     };
 
     win.document.body.appendChild(hand);
 
-    // Position hand based on direction
-    hand.style.top = '50%';
+    // Calculate center position
+    const windowCenterX = win.innerWidth / 2;
+    const windowCenterY = win.innerHeight / 2;
+    const handCenterX = 447.5; // Center of 895px hand
+    const handCenterY = 332; // Center of 664px hand
+
+    // Phase 1: Show fingertips (15% = ~134px) peeking in, centered vertically
+    const fingertipOffset = 895 * 0.15; // Show 15% of hand width
 
     if (fromLeft) {
-        // Hand comes from left (not mirrored)
-        hand.style.left = '-550px';
-        hand.style.transform = 'translateY(-50%)';
+        // Hand comes from left - show right edge (fingers)
+        hand.style.left = (-895 + fingertipOffset) + 'px';
+        hand.style.top = (windowCenterY - handCenterY) + 'px';
+        hand.style.transform = 'none';
     } else {
-        // Hand comes from right (mirrored)
-        hand.style.right = '-550px';
-        hand.style.transform = 'translateY(-50%) scaleX(-1)';
+        // Hand comes from right - show left edge (fingers when mirrored)
+        hand.style.right = (-895 + fingertipOffset) + 'px';
+        hand.style.top = (windowCenterY - handCenterY) + 'px';
+        hand.style.transform = 'scaleX(-1)';
     }
 
-    // Start animation sequence
+    // Hold fingertips for 1 second
     setTimeout(() => {
-        // Phase 1: Hand enters
-        hand.style.opacity = '1';
+        // Phase 2: RAPIDLY snap hand to center (violent entrance)
+        hand.style.transition = 'left 0.25s ease-out, right 0.25s ease-out';
 
         if (fromLeft) {
-            hand.style.left = '-50px';
+            hand.style.left = (windowCenterX - handCenterX) + 'px';
         } else {
-            hand.style.right = '-50px';
+            hand.style.right = (windowCenterX - handCenterX) + 'px';
         }
 
         setTimeout(() => {
-            // Phase 2: Hand closes/grabs
+            // Phase 3: Immediately grab and crack (violent)
+            // Switch to closed hand (hand2: 715x504, centered at 357.5, 252)
             hand.src = '../chapter-1/images/hand2.png';
             hand.onerror = function() {
                 this.src = './chapter-1/images/hand2.png';
             };
 
-            // Create broken glass effect
-            const impactX = fromLeft
-                ? win.innerWidth / 2 - win.innerWidth / 6  // Left side impact
-                : win.innerWidth / 2 + win.innerWidth / 6; // Right side impact
-            const impactY = win.innerHeight / 2;
-            createBrokenGlassEffect(win, impactX, impactY);
+            // Update size for hand2 but keep centered
+            hand.style.width = '715px';
+            hand.style.height = '504px';
+            const hand2CenterX = 357.5;
+            const hand2CenterY = 252;
+
+            if (fromLeft) {
+                hand.style.left = (windowCenterX - hand2CenterX) + 'px';
+                hand.style.top = (windowCenterY - hand2CenterY) + 'px';
+            } else {
+                hand.style.right = (windowCenterX - hand2CenterX) + 'px';
+                hand.style.top = (windowCenterY - hand2CenterY) + 'px';
+            }
+
+            // Glass break sound
+            const glassbreakAudio = new Audio('./media/glassbreak.wav');
+            glassbreakAudio.volume = 0.7;
+            glassbreakAudio.play().catch(e => console.warn('Glassbreak audio blocked:', e));
+
+            // Crack centered on window
+            createBrokenGlassEffect(win, windowCenterX, windowCenterY);
 
             // Flash effect
-            win.document.body.style.transition = 'filter 0.1s';
+            win.document.body.style.transition = 'filter 0.05s';
             win.document.body.style.filter = 'brightness(1.5) contrast(0.8)';
             setTimeout(() => {
                 win.document.body.style.filter = 'none';
-            }, 100);
+            }, 50);
 
             setTimeout(() => {
-                // Phase 3: Drag window away
+                // Phase 4: Play swoop and drag away violently
+                const swoopExitAudio = new Audio('./media/swoop.mp3');
+                swoopExitAudio.volume = 0.6;
+                swoopExitAudio.play().catch(e => console.warn('Swoop exit audio blocked:', e));
+
                 dragWindowAway(win, fromLeft, onComplete);
-            }, 700);
-        }, 1200);
-    }, 100);
+            }, 150);
+        }, 250);
+    }, 1000);
 }
 
 /**
@@ -272,7 +301,7 @@ function dragWindowAway(win, fromLeft, onComplete) {
     // Calculate target based on direction - use very far distances to ensure we hit boundaries
     const targetX = fromLeft ? -5000 : screen.width + 5000;
 
-    const duration = 1500;
+    const duration = 1000; // 1 second drag
     const startTime = Date.now();
     const startWidth = win.outerWidth;
     const startHeight = win.outerHeight;
@@ -287,12 +316,11 @@ function dragWindowAway(win, fromLeft, onComplete) {
 
         const elapsed = Date.now() - startTime;
         const progress = Math.min(elapsed / duration, 1);
-        const eased = progress < 0.5
-            ? 2 * progress * progress
-            : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+        // More violent easing - accelerate quickly
+        const eased = progress * progress * (3 - 2 * progress);
 
         const currentX = startX + (targetX - startX) * eased;
-        const wobbleY = Math.sin(progress * Math.PI * 3) * 20;
+        const wobbleY = Math.sin(progress * Math.PI * 5) * 30; // More wobble
 
         try {
             win.resizeTo(startWidth, startHeight);
@@ -302,12 +330,12 @@ function dragWindowAway(win, fromLeft, onComplete) {
             const actualX = win.screenX;
             const movedDistance = Math.abs(actualX - lastX);
 
-            if (movedDistance < stuckThreshold && elapsed > 100) {
+            if (movedDistance < stuckThreshold && elapsed > 50) {
                 // Window is stuck at boundary
                 if (stuckTime === null) {
                     stuckTime = Date.now();
-                } else if (Date.now() - stuckTime >= 200) {
-                    // Been stuck for 200ms, close the window
+                } else if (Date.now() - stuckTime >= 50) {
+                    // Been stuck for 50ms (reduced from 200ms), close the window
                     windowClosed = true;
                     try {
                         win.close();
@@ -329,7 +357,7 @@ function dragWindowAway(win, fromLeft, onComplete) {
             if (!windowClosed) {
                 if (stuckTime === null) {
                     stuckTime = Date.now();
-                } else if (Date.now() - stuckTime >= 200) {
+                } else if (Date.now() - stuckTime >= 50) {
                     windowClosed = true;
                     try { win.close(); } catch (e) {}
                     onComplete();

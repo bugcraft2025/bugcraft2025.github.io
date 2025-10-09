@@ -14,6 +14,9 @@ export let gameState = {
     tutorialRiftDefeated: false,
     tutorialEyeSpawned: false,
     postTutorialStartTime: 0, // When main game starts after tutorial
+    gracePeriodActive: false, // Whether grace period is active
+    gracePeriodUntil: 0, // When grace period ends
+    timeBeforeGracePeriod: 0, // Store elapsed time when grace period started
     spawnSchedule: [
         { time: 5000, spawns: ['rift'] },
         { time: 20000, spawns: ['rift'] },
@@ -149,11 +152,44 @@ export function updateScannerStatus() {
 }
 
 /**
- * Deals damage to player
+ * Deals damage to player and triggers grace period
  */
 export function damagePlayer(amount) {
     gameState.playerHP = Math.max(0, gameState.playerHP - amount);
+
+    // Activate grace period when player takes damage
+    if (gameState.playerHP > 0) {
+        startGracePeriod();
+    }
+
     return gameState.playerHP;
+}
+
+/**
+ * Starts the grace period
+ */
+export function startGracePeriod() {
+    gameState.gracePeriodActive = true;
+    gameState.gracePeriodUntil = Date.now() + 5000; // 5 seconds
+
+    // Store current elapsed time for timer pause
+    if (gameState.postTutorialStartTime > 0) {
+        gameState.timeBeforeGracePeriod = Date.now() - gameState.postTutorialStartTime;
+    }
+}
+
+/**
+ * Updates grace period status and resumes timer if ended
+ */
+export function updateGracePeriod() {
+    if (gameState.gracePeriodActive && Date.now() >= gameState.gracePeriodUntil) {
+        gameState.gracePeriodActive = false;
+
+        // Resume timer by adjusting postTutorialStartTime
+        if (gameState.postTutorialStartTime > 0 && gameState.timeBeforeGracePeriod > 0) {
+            gameState.postTutorialStartTime = Date.now() - gameState.timeBeforeGracePeriod;
+        }
+    }
 }
 
 /**
@@ -239,6 +275,9 @@ export function initializeGame() {
     gameState.tutorialRiftDefeated = false;
     gameState.tutorialEyeSpawned = false;
     gameState.postTutorialStartTime = 0;
+    gameState.gracePeriodActive = false;
+    gameState.gracePeriodUntil = 0;
+    gameState.timeBeforeGracePeriod = 0;
     gameState.spawnedScheduleIndexes = [];
     scheduleNextHandGrab();
 }

@@ -1,5 +1,6 @@
 // textDisplay.js
 import { dialogueTextElement, nextButton, clearChoices, updateNextButton } from './ui.js';
+import { playTextSound } from './dialogueAudio.js';
 
 let typeInterval;
 let isTyping = false;
@@ -50,6 +51,11 @@ export function typeWriter(text, onFinished) {
                 currentHTML += currentChar;
                 dialogueTextElement.innerHTML = currentHTML; // Update display
                 charIndex++;
+
+                // Play text sound for visible characters (not spaces)
+                if (currentChar !== ' ' && currentChar !== '\n') {
+                    playTextSound();
+                }
             }
 
             // Schedule next character

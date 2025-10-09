@@ -18,7 +18,8 @@ import {
     setWindowRespawnCooldown,
     canRespawnWindow,
     getRespawnCooldownRemaining,
-    initializeGame
+    initializeGame,
+    updateGracePeriod
 } from './paranormalGame.js';
 
 import { createRiftElement, createRiftExplosion } from './riftVisual.js';
@@ -52,6 +53,20 @@ import {
 } from './paranormalGameUI.js';
 
 import { grabAndDestroyWindow } from './windowGrabber.js';
+import {
+    initializeParanormalAudio,
+    startHorrorAmbience,
+    stopHorrorAmbience,
+    playRope1Sound,
+    playRope2Sound,
+    playLightOpenSound,
+    playLightCloseSound,
+    playCurtainOpenSound,
+    playCurtainCloseSound,
+    playRadarBeepSound,
+    playDisgustingPitchSound,
+    cleanupParanormalAudio
+} from './paranormalAudio.js';
 
 let onGameCompleteCallback = null;
 let gameLoopInterval = null;
@@ -66,6 +81,8 @@ export function startParanormalGame(onComplete) {
     onGameCompleteCallback = onComplete;
 
     initializeGame();
+    initializeParanormalAudio();
+    startHorrorAmbience();
     openGameWindows();
 
     setTimeout(() => {
@@ -119,9 +136,27 @@ function updateEnemyStagesWithCurtainAcceleration() {
         }
 
         // Check if enough time has passed to progress to next stage
-        if (now - enemy.lastUpdate >= progressInterval && enemy.stage < config.maxStage) {
+        // During tutorial, allow tutorial eye to reach full stage for proper defense mechanics
+        // but cap rift at maxStage - 1 to prevent tutorial rift from attacking
+        const maxAllowedStage = (gameState.tutorialMode && !(enemy.type === 'eye' && gameState.tutorialEyeSpawned))
+            ? config.maxStage - 1
+            : config.maxStage;
+        if (now - enemy.lastUpdate >= progressInterval && enemy.stage < maxAllowedStage) {
+            const oldStage = enemy.stage;
             enemy.stage++;
             enemy.lastUpdate = now;
+
+            // Play rope sounds when eye stitches are removed
+            if (enemy.type === 'eye') {
+                if (enemy.stage === 2 || enemy.stage === 3) {
+                    // First two stitches
+                    playRope1Sound();
+                } else if (enemy.stage === 4) {
+                    // Third/last stitch
+                    playRope2Sound();
+                }
+                // Stage 5 (fully open) - no sound
+            }
         }
     });
 }
@@ -136,11 +171,19 @@ function startGameLoop() {
             return;
         }
 
-        // Check and spawn enemies according to schedule
-        checkScheduledSpawns();
+        // Update grace period status
+        updateGracePeriod();
 
-        // Update enemy stages (with curtain acceleration)
-        updateEnemyStagesWithCurtainAcceleration();
+        // Check and spawn enemies according to schedule (skip during grace period)
+        if (!gameState.gracePeriodActive) {
+            checkScheduledSpawns();
+        }
+
+        // Update enemy stages (with curtain acceleration) (skip during grace period)
+        // During tutorial, enemies can progress but won't attack
+        if (!gameState.gracePeriodActive) {
+            updateEnemyStagesWithCurtainAcceleration();
+        }
 
         // Update scanner status
         updateScannerStatus();
@@ -167,9 +210,15 @@ function startGameLoop() {
         // Update respawn cooldowns
         updateRespawnCooldownDisplays();
 
-        // Update timer display
+        // Update timer display (show frozen time during grace period)
         if (!gameState.tutorialMode && gameState.postTutorialStartTime > 0) {
-            const timeRemaining = 150000 - (Date.now() - gameState.postTutorialStartTime);
+            let timeRemaining;
+            if (gameState.gracePeriodActive) {
+                // Show frozen time during grace period
+                timeRemaining = 150000 - gameState.timeBeforeGracePeriod;
+            } else {
+                timeRemaining = 150000 - (Date.now() - gameState.postTutorialStartTime);
+            }
             updateTimerDisplay(Math.max(0, timeRemaining));
         } else {
             updateTimerDisplay(-1); // Show --:--
@@ -277,6 +326,9 @@ function checkEyeDefense() {
  * Handles eye attack failure
  */
 function eyeAttackFailed(eye) {
+    // Play disgusting pitch sound
+    playDisgustingPitchSound();
+
     // Epileptic rainbow flash
     triggerRainbowFlash();
 
@@ -684,11 +736,13 @@ function updateRespawnCooldownDisplays() {
 function gameWon() {
     gameState.gameActive = false;
     stopGameLoop();
+    stopHorrorAmbience();
 
     updateGameMessage('<span style="color: #00ff00; font-size: 18px; font-weight: bold;">MISSION COMPLETE! You survived the paranormal threats!</span>');
 
     setTimeout(() => {
         closeGameWindows();
+        cleanupParanormalAudio();
         if (onGameCompleteCallback) {
             onGameCompleteCallback('success');
         }
@@ -701,11 +755,13 @@ function gameWon() {
 function gameLost() {
     gameState.gameActive = false;
     stopGameLoop();
+    stopHorrorAmbience();
 
     updateGameMessage('<span style="color: #ff0000; font-size: 18px; font-weight: bold;">CONTAINMENT BREACH! You have been consumed by the darkness...</span>');
 
     setTimeout(() => {
         closeGameWindows();
+        cleanupParanormalAudio();
         if (onGameCompleteCallback) {
             onGameCompleteCallback('failure');
         }
@@ -717,6 +773,9 @@ function gameLost() {
 
 window.paranormalScanAction = function() {
     if (gameState.scannerDisabled) return;
+
+    // Play radar beep sound
+    playRadarBeepSound();
 
     const finderWin = getFinderWindow();
     if (!finderWin || finderWin.closed) return;
@@ -750,16 +809,19 @@ window.paranormalScanAction = function() {
 };
 
 window.paranormalFlashlightDown = function() {
+    playLightOpenSound();
     setFlashlightState(true);
 };
 
 window.paranormalFlashlightUp = function() {
+    playLightCloseSound();
     setFlashlightState(false);
 };
 
 window.paranormalCurtainDown = function() {
     if (curtainHoldInterval) return; // Already holding
 
+    playCurtainCloseSound();
     curtainHoldInterval = setInterval(() => {
         updateCurtainState(true); // Closing
     }, 200);
@@ -771,6 +833,7 @@ window.paranormalCurtainUp = function() {
         curtainHoldInterval = null;
     }
 
+    playCurtainOpenSound();
     // Start opening
     const openInterval = setInterval(() => {
         updateCurtainState(false); // Opening

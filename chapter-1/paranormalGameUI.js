@@ -947,7 +947,7 @@ export function triggerCurtainSuccessGlow() {
 }
 
 /**
- * Triggers epileptic rainbow effect on all windows
+ * Triggers epileptic rainbow effect on all windows with scary enhancements
  */
 export function triggerRainbowFlash() {
     const windows = [getFinderWindow(), getFlashlightWindow(), getCurtainWindow()];
@@ -956,11 +956,43 @@ export function triggerRainbowFlash() {
     let flashCount = 0;
     const maxFlashes = 20;
 
+    // Add eye hallucination elements to each window
+    const eyeElements = [];
+    windows.forEach((win, idx) => {
+        if (win && !win.closed && win.document && win.document.body) {
+            const eyeHallucination = win.document.createElement('img');
+            eyeHallucination.src = './images/eye5.png'; // Fully opened eye
+            eyeHallucination.style.position = 'fixed';
+            eyeHallucination.style.width = '200px';
+            eyeHallucination.style.height = '200px';
+            eyeHallucination.style.left = '50%';
+            eyeHallucination.style.top = '50%';
+            eyeHallucination.style.transform = 'translate(-50%, -50%)';
+            eyeHallucination.style.zIndex = '99999';
+            eyeHallucination.style.opacity = '0';
+            eyeHallucination.style.transition = 'opacity 0.1s';
+            eyeHallucination.style.pointerEvents = 'none';
+            eyeHallucination.className = 'eye-hallucination';
+            win.document.body.appendChild(eyeHallucination);
+            eyeElements.push(eyeHallucination);
+        }
+    });
+
     const flashInterval = setInterval(() => {
         const color = colors[flashCount % colors.length];
 
         windows.forEach((win, idx) => {
             if (win && !win.closed && win.document && win.document.body) {
+                // Add intense screen shaking
+                const shakeX = (Math.random() - 0.5) * 20;
+                const shakeY = (Math.random() - 0.5) * 20;
+                win.document.body.style.transform = `translate(${shakeX}px, ${shakeY}px)`;
+
+                // Flash eye hallucination randomly
+                if (eyeElements[idx]) {
+                    eyeElements[idx].style.opacity = Math.random() > 0.5 ? '0.9' : '0';
+                }
+
                 // For curtain window, use the effect overlay
                 if (idx === 2) {
                     const overlay = win.document.getElementById('effect-overlay');
@@ -977,9 +1009,13 @@ export function triggerRainbowFlash() {
         flashCount++;
         if (flashCount >= maxFlashes) {
             clearInterval(flashInterval);
-            // Reset backgrounds by removing inline styles so CSS classes work again
+            // Reset everything
             windows.forEach((win, idx) => {
                 if (win && !win.closed && win.document && win.document.body) {
+                    // Remove shaking
+                    win.document.body.style.transform = '';
+
+                    // Reset backgrounds
                     if (idx === 0) {
                         win.document.body.style.background = 'linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%)';
                     } else if (idx === 1) {
@@ -994,6 +1030,15 @@ export function triggerRainbowFlash() {
                     }
                 }
             });
+
+            // Remove eye hallucinations after a brief delay
+            setTimeout(() => {
+                eyeElements.forEach(eye => {
+                    if (eye && eye.parentNode) {
+                        eye.remove();
+                    }
+                });
+            }, 500);
         }
     }, 100);
 }

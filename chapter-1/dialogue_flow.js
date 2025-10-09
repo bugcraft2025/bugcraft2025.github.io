@@ -164,11 +164,10 @@ const dialogueFlow = {
             "The darkness claimed you.",
             "But that's okay.",
             "In this world, <b>failure</b> is just another path.",
-            "Another way to see the <i>truth</i>.",
-            "Shall we continue anyway?"
+            "Another way to see the <i>truth</i>."
         ],
         choices: [
-            { text: "<i>Yes, continue.</i>", nextCheckpoint: 'after_bomb_game' }
+            { text: "<b>Try again.</b>", nextCheckpoint: 'bomb_game_start' }
         ]
     },
     "after_bomb_game": {
@@ -274,11 +273,10 @@ const dialogueFlow = {
             "Your <i>hope</i>... extinguished.",
             "But in failure, you learned the <b>truth</b>.",
             "<censor>They</censor> are real.",
-            "<censor>They</censor> are watching.",
-            "And <censor>they</censor> will <i>always</i> be there.",
-            "In the <b>dark</b>.",
-            "You can close this window now.",
-            "If you dare."
+            "<censor>They</censor> are watching."
+        ],
+        choices: [
+            { text: "<b>Try again.</b>", nextCheckpoint: 'paranormal_game_start' }
         ]
     }
 };

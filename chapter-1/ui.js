@@ -1,4 +1,5 @@
 // ui.js
+import { ensureAmbienceIsPlaying, stopDialogueAmbience } from './dialogueAudio.js';
 
 // Get references to UI elements needed by multiple modules
 export const dialogueTextElement = document.getElementById('dialogue-text');
@@ -34,6 +35,9 @@ export function showChoices(choices, onChoiceSelected) {
         // Staggered animation for appearing choices
         button.style.animationDelay = `${index * 0.15}s`;
         button.addEventListener('click', () => {
+            // Ensure ambience starts on user interaction
+            ensureAmbienceIsPlaying();
+
             // Prevent default button behavior if any (though unlikely needed here)
             // event.preventDefault();
             onChoiceSelected(choice.nextCheckpoint);
@@ -133,6 +137,9 @@ export function triggerDialogueBreak(breakData = {}) {
     }, floatingCleanupDelay);
 
     if (escapedWindow) {
+        // Stop the normal ambience on the main window since dialogue moved to popup
+        stopDialogueAmbience();
+
         try {
             initializeEscapedWindow(escapedWindow, {
                 windowTitle,

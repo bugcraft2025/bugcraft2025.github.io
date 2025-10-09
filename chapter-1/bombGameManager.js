@@ -24,12 +24,24 @@ import {
 
 import { destroyBothWindows } from './windowGrabber.js';
 
+import {
+    startSoftsong,
+    startFireburn,
+    applySlightDistortion,
+    applyMediumDistortion,
+    increaseFireburnVolume,
+    stopSoftsong,
+    stopFireburn,
+    stopAllBombGameAudio
+} from './bombGameAudio.js';
+
 let onGameCompleteCallback = null;
 
 /**
  * Dialogue text for different game states
  */
 const dialogueTexts = {
+    level0: "<b>TUTORIAL:</b> Red bombs appear in the <span style='color: #5599ff;'>BLUE window</span>. Blue bombs appear in the <span style='color: #ff6666;'>RED window</span>. Cover each bomb with its matching colored window!",
     level1: "Cover the bombs with the respective colored window before the time runs out.",
     level2: "Good. Continue the training. Keep moving.",
     level3: "Getting the hang of it?",
@@ -56,7 +68,8 @@ export function startBombGame(onComplete) {
 
     setTimeout(() => {
         initializeWindowContent();
-        startLevel(1);
+        startSoftsong(); // Start the background music
+        startLevel(0); // Start with tutorial level
     }, 500);
 }
 
@@ -71,11 +84,23 @@ function startLevel(level) {
     // Update darkness phase
     const newDarknessPhase = getDarknessPhaseForLevel(level);
     const wasPhaseChange = newDarknessPhase !== gameState.darknessPhase;
+    const previousPhase = gameState.darknessPhase;
     gameState.darknessPhase = newDarknessPhase;
 
     // Update window colors if phase changed
     if (wasPhaseChange) {
         updateWindowColors(gameState.darknessPhase);
+
+        // Handle audio changes based on darkness phase
+        if (newDarknessPhase === 1 && previousPhase === 0) {
+            // Level 5: First darkening - add fireburn and slight distortion
+            applySlightDistortion();
+            startFireburn();
+        } else if (newDarknessPhase === 2 && previousPhase === 1) {
+            // Level 9: Second darkening - more distortion and louder fireburn
+            applyMediumDistortion();
+            increaseFireburnVolume();
+        }
     }
 
     // Set time limit based on level
@@ -89,9 +114,13 @@ function startLevel(level) {
     // Update status window
     const statusWin = getStatusWindow();
     if (statusWin && statusWin.document) {
-        statusWin.document.getElementById('levelText').textContent = `LEVEL ${level}`;
+        const levelDisplay = level === 0 ? 'TUTORIAL' : `LEVEL ${level}`;
+        statusWin.document.getElementById('levelText').textContent = levelDisplay;
         updateDialogueText(dialogueText);
-        statusWin.document.getElementById('timer').textContent = gameState.timeRemaining;
+
+        // Display timer differently for tutorial
+        const timerDisplay = level === 0 ? '∞' : gameState.timeRemaining;
+        statusWin.document.getElementById('timer').textContent = timerDisplay;
         statusWin.document.getElementById('timer').className = 'timer';
     }
 
@@ -113,6 +142,9 @@ function startLevel(level) {
  */
 function updateTimer() {
     if (!gameState.gameActive) return;
+
+    // Don't countdown during tutorial (level 0)
+    if (gameState.level === 0) return;
 
     gameState.timeRemaining--;
 
@@ -345,7 +377,10 @@ async function startPostLevel12Horror() {
     updateDialogueText(dialogueTexts.complete);
     await sleep(2000);
 
-    // Step 2: Fade windows to pitch black
+    // Step 2: Stop softsong, keep fireburn
+    stopSoftsong();
+
+    // Step 3: Fade windows to pitch black
     updateDialogueText("Wait... something's wrong...");
     await sleep(1500);
 
@@ -375,6 +410,9 @@ async function startPostLevel12Horror() {
     updateDialogueText("They're gone. The windows... <censor>he</censor> took them.");
 
     setTimeout(() => {
+        // Stop all audio before calling completion callback
+        stopAllBombGameAudio();
+
         if (onGameCompleteCallback) {
             onGameCompleteCallback('success');
         }
@@ -404,6 +442,7 @@ function gameFailed() {
     }
 
     setTimeout(() => {
+        stopAllBombGameAudio(); // Stop all audio on failure
         closeGameWindows();
         if (onGameCompleteCallback) {
             onGameCompleteCallback('failure');
@@ -416,6 +455,13 @@ function gameFailed() {
  */
 window.skipBombTimer = function() {
     if (!gameState.gameActive) return;
+
+    // For tutorial, just complete the level immediately
+    if (gameState.level === 0) {
+        levelComplete();
+        return;
+    }
+
     gameState.timeRemaining = 0;
 
     const statusWin = getStatusWindow();

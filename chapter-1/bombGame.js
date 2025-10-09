@@ -56,6 +56,7 @@ export const colorSchemes = {
  * Gets the number of bombs for a given level
  */
 export function getBombCountForLevel(level) {
+    if (level === 0) return 1; // Tutorial: 1 bomb
     if (level >= 1 && level <= 3) return 1;
     if (level >= 4 && level <= 6) return 2;
     if (level >= 7 && level <= 9) return 3;
@@ -68,6 +69,7 @@ export function getBombCountForLevel(level) {
  * Gets the darkness phase for a given level
  */
 export function getDarknessPhaseForLevel(level) {
+    if (level === 0) return 0; // Tutorial: normal brightness
     if (level >= 1 && level <= 4) return 0;
     if (level >= 5 && level <= 8) return 1;
     if (level >= 9 && level <= 12) return 2;
@@ -176,6 +178,7 @@ export function generateBombsForLevel(level) {
  * You can customize the timer for each level by changing these values
  */
 const levelTimeLimits = [
+    999999, // Level 0 (Tutorial) - no time limit
     30, // Level 1
     25, // Level 2
     20, // Level 3
@@ -194,8 +197,9 @@ const levelTimeLimits = [
  * Gets the time limit for a given level
  */
 export function getTimeLimitForLevel(level) {
-    if (level >= 1 && level <= levelTimeLimits.length) {
-        return levelTimeLimits[level - 1];
+    if (level === 0) return levelTimeLimits[0]; // Tutorial - no time limit
+    if (level >= 1 && level <= 12) {
+        return levelTimeLimits[level];
     }
     return 30; // default
 }

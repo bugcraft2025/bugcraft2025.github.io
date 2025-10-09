@@ -5,6 +5,7 @@ import { typeWriter, showFullText, isCurrentlyTyping } from './textDisplay.js';
 import { showAndAnimateClock, hideClock, isClockVisible } from './clock.js';
 import { startBombGame } from './bombGameManager.js';
 import { startParanormalGame } from './paranormalGameManager.js';
+import { initializeDialogueAudio, stopDialogueAmbience, startDialogueAmbience } from './dialogueAudio.js';
 
 let currentCheckpointKey = 'start';
 let currentCheckpoint = null;
@@ -89,12 +90,18 @@ function hideYellowScreen() {
 function startBombGameSequence() {
     bombGameActive = true;
 
+    // Stop dialogue ambience during game
+    stopDialogueAmbience();
+
     // Callback when game completes
     const onGameComplete = (result) => {
         bombGameActive = false;
-        
+
         // Restore the dialogue box UI to its original state
         restoreDialogueBoxUI();
+
+        // Resume dialogue ambience
+        startDialogueAmbience();
 
         // Proceed to appropriate checkpoint based on result
         if (result === 'success') {
@@ -150,12 +157,18 @@ function restoreDialogueBoxUI() {
 function startParanormalGameSequence() {
     paranormalGameActive = true;
 
+    // Stop dialogue ambience during game
+    stopDialogueAmbience();
+
     // Callback when game completes
     const onGameComplete = (result) => {
         paranormalGameActive = false;
-        
+
         // Restore the dialogue box UI to its original state
         restoreDialogueBoxUI();
+
+        // Resume dialogue ambience
+        startDialogueAmbience();
 
         // Proceed to appropriate checkpoint based on result
         if (result === 'success') {
@@ -428,5 +441,6 @@ function proceedToCheckpoint(nextCheckpointKey) {
  */
 export function initializeDialogue(startKey = 'start') {
     initializeFilmOverlay(); // Initialize film overlay reference
+    initializeDialogueAudio(); // Initialize dialogue audio (ambience + text sounds)
     showDialogue(startKey);
 }
