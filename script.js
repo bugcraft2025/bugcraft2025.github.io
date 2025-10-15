@@ -841,6 +841,6 @@ function initScrollTextGlitch() {
     // Expose activation function
     window.activateHorrorSequence = () => {
         isActivated = true;
-        console.log('%cThe headers are watching...', 'color: #8b0000; font-style: italic;');
+        console.log('%cThe titles are watching... Maybe try poking them?', 'color: #8b0000; font-style: italic;');
     };
 })();
